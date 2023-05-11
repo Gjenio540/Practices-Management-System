@@ -1,10 +1,14 @@
+import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import './App.scss'
+import MainPage from './pages/MainPage'
 
-const App = () => {
+const App: React.FC = () => {
   return (
-    <>
-      <h1>Hello World 🌎</h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<MainPage/>}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
