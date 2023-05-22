@@ -1,12 +1,16 @@
-export function getDateString()
-{
+export function getDateISOString(): string {
+    let date = new Date()
+    let currentDate = date.toISOString()
+    return currentDate
+}
+
+export function getDateString(): string {
     let date = new Date()
     let currentDate = date.toLocaleDateString("pl-PL")
     let currentTime = date.toLocaleTimeString()
     return currentDate + " " + currentTime
 }
 
-export function logDate()
-{
+export function logDate(): string {
     return "["+getDateString()+"]"
 }
