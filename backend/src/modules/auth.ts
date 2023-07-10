@@ -7,8 +7,7 @@ const jwtSecret = process.env.JWT_SECRET as unknown as string;
 
 export type jwtPayload = {
   "id": number
-  "name": string,
-  "role": string
+  "role": "supervisor" | "student"
 }
 
 export function generatePassword(): string {
@@ -17,12 +16,12 @@ export function generatePassword(): string {
   let upper: string[] = [];
   splitted.forEach(char => {
     if(Math.random() < 0.4)
-	    upper.push(char.toUpperCase());
+      upper.push(char.toUpperCase());
     else
         upper.push(char);
   })
-  let password = upper.join('')
-  return password
+  let password = upper.join('');
+  return password;
 }
 
 // token validation
@@ -33,17 +32,17 @@ export function checkToken(req: Request, res: Response, next: NextFunction): voi
       res.sendStatus(401);
       return;
   }
-  jsonwebtoken.verify(token, jwtSecret, (error, user) => { //token verification
+  jsonwebtoken.verify(token, jwtSecret, (error) => { //token verification
       if(error) {
           res.sendStatus(403);
           return;
       }
-      res.send(user);
+      req.body.token = token //send token back to main function
       next();
   })
 }
 
 // jwt payload parser
-export function parseJWTpayload (token: string): object {
+export function parseJWTpayload (token: string): jwtPayload {
   return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
 }
