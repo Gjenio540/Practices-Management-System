@@ -1,10 +1,11 @@
-import express, {NextFunction, Request, Response} from 'express'
+import express, { Request, Response } from 'express'
+import cors from 'cors';
 import jsonwebtoken from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
-import { searchUser, insertUser, insertStudent } from './modules/database.js'
+import { searchUser, insertUser, insertStudent, getStudents } from './modules/database.js'
 import { logDate } from './modules/date.js'
 import { transporter } from './modules/email.js'
-import { generatePassword, checkToken, parseJWTpayload } from './modules/auth.js'
+import { generatePassword, checkToken, parseJWTpayload, hashPassword, comparePassword } from './modules/auth.js'
 import type { jwtPayload } from './modules/auth.js'
 
 dotenv.config();
@@ -12,26 +13,7 @@ const port = process.env.APP_PORT as unknown as number;
 const jwtSecret = process.env.JWT_SECRET as unknown as string;
 const app = express();
 app.use(express.json());
-app.use(checkToken); //use checkToken() before main function
-
-// app.get("/students", async (req: Request, res: Response) => {
-//     const student = await getStudents();
-//     res.send(student).status(200);
-//     //console.log(logDate()+" get /students "+res.statusCode);
-// })
-
-// app.post("/test/register", checkToken, async (req: Request, res: Response) => {
-//     const payload = parseJWTpayload(req.body.token as string);
-
-//     if (payload.role !== "supervisor") {
-//         res.sendStatus(403);
-//         return;
-//     }
-
-//     const password = generatePassword();
-//     const user = await insertUser(req.body.username, password, "student");
-//     res.send(user).status(200);
-// })
+app.use(cors()); //allow access from the same origin
 
 //signup student
 app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
@@ -52,11 +34,11 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         const gelearn = `${index}@g.elearn.uz.zgora.pl`;
         const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
         //---Insert user and student---
-        const user = await insertUser(req.body.username, password, "student");
+        const user = await insertUser(req.body.username, await hashPassword(password), "student");
         const userId = user.insertId;
         const student = await insertStudent(name, lastname, index, areaId, group, userId);
-        //---Check DB errors---
-
+        //---Check DB status---
+        
         //---Send Mail----
         await transporter.sendMail({
             from: '"FROM" <foo@example.com>', // sender address
@@ -68,7 +50,7 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
                     hasło: ${password}
                     `, // html body
         });
-        res.sendStatus(200);
+        res.sendStatus(201);
     }
     catch {
         res.sendStatus(500);
@@ -82,9 +64,15 @@ app.post("/auth/login", async (req: Request, res: Response) => {
         const username = req.body.username as string;
         const password = req.body.password as string;
         //query database
-        const user = await searchUser(username, password);
+        const user = await searchUser(username);
         //check if user exist
         if (user === "notfound") {
+            res.sendStatus(404);
+            return;
+        }
+        //compare password with hashed password in db
+        console.log(user.password)
+        if (await comparePassword(password, user.password) === false) {
             res.sendStatus(404);
             return;
         }
@@ -102,13 +90,13 @@ app.post("/auth/login", async (req: Request, res: Response) => {
 })
 
 //get all practices
-app.get("/practices", async (req: Request, res: Response) => {
+app.get("/practices", checkToken, async (req: Request, res: Response) => {
     try {
-        // const parsedPayload = parseJWTpayload();
-        // if (parsedPayload.role !== "student") {
-        //     res.sendStatus(403);
-        //     return;
-        // }
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
     }
     catch {
         res.status(500);
@@ -125,7 +113,7 @@ app.get("/practices/me", checkToken, async (req: Request, res: Response) => {
         }
     }
     catch {
-        res.status(500);
+        res.sendStatus(500);
     }
 })
 
@@ -143,5 +131,24 @@ app.put("", async (req: Request, res: Response) => {
     });
 })
 
+//get list of students
+app.get("/students", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const students = await getStudents();
+        if (students.length === 0) {
+            res.sendStatus(404);
+            return;
+        }
+        res.send(students).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
 
 app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));

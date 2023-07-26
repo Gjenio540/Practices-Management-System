@@ -13,14 +13,14 @@ const credentials: mysql2.ConnectionOptions = {
 
 export async function getStudents() {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query('SELECT * FROM student');
+  const result = await connection.query<RowDataPacket[]>('SELECT students.firstname, students.lastname, students.indexNum, students.studGroup, areas.areaName FROM students INNER JOIN areas on students.areaId = areas.id;');
   connection.end();
   return result[0];
 }
 
-export async function searchUser(username: string, password: string) {
+export async function searchUser(username: string) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<RowDataPacket[]>('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+  const result = await connection.query<RowDataPacket[]>('SELECT * FROM users WHERE username = ?', [username]);
   connection.end();
 
   if (Array.isArray(result[0]) && result[0].length > 0) {
@@ -33,6 +33,7 @@ export async function searchUser(username: string, password: string) {
 export async function insertUser(username: string, password: string, role: string) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<OkPacket>('INSERT INTO `users` (`username`, `password`, `role`) VALUES (?, ?, ?)', [username, password, role]);
+  connection.end();
   return result[0];
 }
 
@@ -41,5 +42,15 @@ export async function insertStudent(name: string, lastname: string, index: strin
   const result = await connection.query<OkPacket>(
     'INSERT INTO `users` (`name`, `lastname`, `index`, `areaId`, group, userId) VALUES (?, ?, ?, ?, ?, ?)',[name, lastname, index, areaId, group, userId]
   );
+  connection.end();
   return result[0];
+}
+
+export async function getMyPractice(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<RowDataPacket[]>('SELECT * FROM student practices', []);
+  connection.end();
+  if (Array.isArray(result[0]) && result[0].length > 0) {
+    return result[0][0];
+  }
 }
