@@ -1,6 +1,11 @@
-const MainPage: React.FC = () => {
+import Header from "../components/Header"
+
+const MainPage = () => {
     return(
-        <h1>Welcome to main page 🖥️</h1>
+        <>
+        <Header />
+        <h1>Main Page 🖥️</h1>
+        </>
     )
 }
 
