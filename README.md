@@ -1,4 +1,4 @@
-# Engineering Thesis: <br>Web Application For Professional Practices Managment
+# Engineering Diploma Project: <br>Web Application For Professional Practices Managment
 
 ## Technology stack
 
