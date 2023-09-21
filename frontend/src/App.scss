@@ -4,6 +4,7 @@ $bg-dark: #212121;
 $bg-light: #FFFFFF;
 $color-green: #58C570;
 $color-red: #DF4848;
+$color-blue: #5A58C5;
 
 @media (prefers-color-scheme: dark) {
     body {
@@ -17,6 +18,11 @@ $color-red: #DF4848;
         background-color: $bg-light;
         color: #000
     }
+}
+
+a {
+    text-decoration: none;
+    color: #FFF;
 }
 
 body {
@@ -36,22 +42,16 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
-
-    button {
-        background-color: $color-red;
-        border-radius: 7px;
-        border-color: transparent;
-        font-size: 1.5rem;
-        width: 135px;
-        height: 50px;
-        transition: 0.3s;
-    } button:hover {
-        cursor: pointer;
-        background-color: #A63636;
-        transition: 0.3s;
-    }
 }
 
+select {
+    padding: 10px;
+    font-size: 1.25rem;
+    width: 400px;
+    background-color: #525252;
+    border-radius: 7px;
+    border-color: transparent;
+}
 
 .warning {
     color: $color-red;
@@ -62,8 +62,44 @@ header {
     font-size: 3rem;
 }
 
-.centeredText{
+.centeredText {
     text-align: center;
+}
+
+
+.button {
+    padding: 10px 20px;
+    transition: 0.3s;
+    text-decoration: none;
+    border-radius: 7px;
+    border-color: transparent;
+    color: #FFF;
+    font-size: 1.25rem;
+    &:hover {
+        cursor: pointer;
+        transition: 0.3s;
+    }
+}
+
+.bt-green {
+    background-color: $color-green;
+    &:hover {
+        background-color: #4a9a59;
+    }
+}
+
+.bt-blue {
+    background-color: $color-blue;
+    &:hover {
+        background-color: #3d3c89;
+    }
+}
+
+.bt-red {
+    background-color: $color-red;
+    &:hover {
+        background-color: #A63636;
+    }
 }
 
 // phone view

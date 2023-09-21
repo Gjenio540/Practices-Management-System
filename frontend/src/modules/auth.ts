@@ -1,7 +1,4 @@
-type user = {
-    token: string,
-    id: number
-}
+import type { user } from "./types";
 
 export function setUser(user: user): void {
     window.sessionStorage.setItem('user', JSON.stringify(user));
@@ -16,7 +13,7 @@ export function getUser(): user | undefined {
     return;
 }
 
-export function isLogged(): boolean {
+export function isLoggedIn(): boolean {
     const user = getUser();
     if (user != undefined) {
         return !!user.token;

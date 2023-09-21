@@ -1,0 +1,127 @@
+@media (prefers-color-scheme: dark) {
+    .items::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    .items::-webkit-scrollbar-track {
+        background: #525252;
+        border-radius: 10px;
+        
+    }
+    
+    .items::-webkit-scrollbar-thumb {
+        background: #a63636;
+        border-radius: 10px;
+    }
+}
+
+@media (prefers-color-scheme: light) { }
+
+@media only screen and (max-width: 600px) {
+
+    .showButton {
+        display: block;
+    }
+
+    .container {
+        display: grid;
+    }
+
+    .left {
+        display: none;
+        padding: 10px;
+        background-color: #525252;
+        border-radius: 7px;
+        margin: 5px 10px;
+    }
+
+    .heading {
+        display: none;
+    }
+
+    .items {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .item {
+        background: #525252;
+        border-radius: 7px;
+        padding-left: 10px;
+        user-select: none;
+        height: max-content;
+    }
+
+    #showButton {
+        margin: 10px 10px 0 10px; 
+    }
+ }
+
+@media only screen and (min-width: 992px) {
+
+    #showButton {
+        display: none;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 7fr;
+        padding: 35px 10px 0 10px;
+    }
+    
+    .left {
+        background-color: #525252;
+        text-align: center;
+        border-radius: 15px;
+        height: calc(100vh - 200px);
+    }
+    
+    .heading {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        margin: 0 90px;
+        font-size: 1.25rem;
+    }
+    
+    .items {
+        overflow: auto;
+        height: calc(100vh - 210px);
+    }
+    
+    .item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        margin: 0 90px;
+        font-size: 1.25rem;
+        border-radius: 7px;
+        background: #525252;
+        margin-top: 10px;
+
+        &:hover {
+            background-color: #5A58C5;
+            cursor: pointer;
+        }
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding-left: 10px;
+    }
+
+
+}
+
