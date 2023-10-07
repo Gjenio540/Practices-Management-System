@@ -2,6 +2,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from "../modules/auth";
 import { host } from '../modules/env';
+import styles from './sass/SignInPage.module.scss'
 
 const SignInPage = () => {
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -23,7 +24,7 @@ const SignInPage = () => {
                 })
             });
             if (!data.ok) {
-                setError("Błędne dane logowania")
+                setError("Błędne dane logowania");
                 return;
             }
             const user = await data.json();
@@ -41,18 +42,16 @@ const SignInPage = () => {
     }
 
     return (
-        <>
         <div className="container">
             <h1 className='centeredText'>System Zarządzania <br/> Praktykami Zawodowymi</h1>
-            <form className="loginForm" onSubmit={submit}>
+            <form className={styles.loginForm} onSubmit={submit}>
                 <h1 className="title">Logowanie</h1>
                 {error && <h2 className="warning">{error}</h2>}
                 <input type="text" ref={usernameRef} placeholder='Login' required/>
                 <input type="password" ref={passwordRef} placeholder='Hasło' required/>
-                <input type="submit" value={"zaloguj"}/>
+                <input type="submit" className="button bt-green" value={"zaloguj"}/>
             </form>
         </div>
-        </>
     );
 }
 
