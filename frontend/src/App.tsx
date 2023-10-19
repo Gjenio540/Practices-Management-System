@@ -7,17 +7,17 @@ import PracticesPage from './pages/PracticesPage';
 import DatailsPage from './pages/DetailsPage';
 import Header from './components/Header';
 
-
 const App = () => {
+  const url = import.meta.env.BASE_URL
   return (
     <BrowserRouter>
       <Header/>
       <Routes>
-        <Route path='/' element={<MainPage/>}/>
-        <Route path='/logowanie' element={<SignInPage/>}/>
-        <Route path='/praktyki' element={<PracticesPage/>}/>
-        <Route path='/praktyki/:id' element={<DatailsPage/>}/>
-        <Route path='/praktyki/me' element={<StudentPage/>}/>
+        <Route path={url+'/'} element={<MainPage/>}/>
+        <Route path={url+'/logowanie'} element={<SignInPage/>}/>
+        <Route path={url+'/praktyki'} element={<PracticesPage/>}/>
+        <Route path={url+'/praktyki/:id'} element={<DatailsPage/>}/>
+        <Route path={url+'/praktyki/me'} element={<StudentPage/>}/>
       </Routes>
     </BrowserRouter>
   );
