@@ -33,7 +33,7 @@ const SignInPage = () => {
                 navigate('/'); //navigate to supervisor main page
             }
             else {
-                navigate('/'); //navigate to student page
+                navigate('/praktyki/me'); //navigate to student page
             }
         }
         catch {

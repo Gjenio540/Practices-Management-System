@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import cors from 'cors';
 import jsonwebtoken from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
-import { searchUser, insertUser, insertStudent, getStudents } from './modules/database.js'
+import * as db from './modules/database.js'
 import { logDate } from './modules/date.js'
 import { transporter } from './modules/email.js'
 import { generatePassword, checkToken, parseJWTpayload, hashPassword, comparePassword } from './modules/auth.js'
@@ -12,8 +12,9 @@ dotenv.config();
 const port = process.env.APP_PORT as unknown as number;
 const jwtSecret = process.env.JWT_SECRET as unknown as string;
 const app = express();
-app.use(express.json());
 app.use(cors()); //allow access from the same origin
+app.use(express.json());
+
 
 //signup student
 app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
@@ -34,17 +35,17 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         const gelearn = `${index}@g.elearn.uz.zgora.pl`;
         const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
         //---Insert user and student---
-        const user = await insertUser(req.body.username, await hashPassword(password), "student");
+        const user = await db.insertUser(req.body.index, await hashPassword(password), "student");
         const userId = user.insertId;
-        const student = await insertStudent(name, lastname, index, areaId, group, userId);
+        const student = await db.insertStudent(name, lastname, index, areaId, group, userId);
         //---Check DB status---
-        
+
         //---Send Mail----
         await transporter.sendMail({
             from: '"FROM" <foo@example.com>', // sender address
             to: `${zimbra}, ${gelearn}`, // list of receivers
             subject: "Konto", // Subject line
-            html:  `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+            html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
                     Twoje dane logowania to: <br>
                     login: ${index} <br>
                     hasło: ${password}
@@ -64,24 +65,23 @@ app.post("/auth/login", async (req: Request, res: Response) => {
         const username = req.body.username as string;
         const password = req.body.password as string;
         //query database
-        const user = await searchUser(username);
+        const user = await db.searchUser(username);
         //check if user exist
         if (user === "notfound") {
             res.sendStatus(404);
             return;
         }
         //compare password with hashed password in db
-        console.log(user.password)
-        if (await comparePassword(password, user.password) === false) {
+        if (await comparePassword(password, user.userPassword) === false) {
             res.sendStatus(404);
             return;
         }
-        const payload: jwtPayload = {"id": user.id, "role": user.role }; // data to serialize
+        const payload: jwtPayload = { "id": user.id, "role": user.userRole }; // data to serialize
         const token = jsonwebtoken.sign(payload, jwtSecret); // signing web token
         res.json({
             "token": token,
             "id": user.id,
-            "role": user.role
+            "role": user.userRole
         }).status(200); // send response
     }
     catch {
@@ -89,17 +89,23 @@ app.post("/auth/login", async (req: Request, res: Response) => {
     }
 })
 
-//get all practices
-app.get("/practices", checkToken, async (req: Request, res: Response) => {
+//get all practices preview data
+app.get("/practices/preview", checkToken, async (req: Request, res: Response) => {
     try {
         const payload = parseJWTpayload(req.body.token as string);
         if (payload.role !== "supervisor") {
             res.sendStatus(403);
             return;
         }
+        const result = await db.getAllPractices(payload.id);
+        if (result === "notfound") {
+            res.sendStatus(404);
+            return;
+        }
+        res.send(result).status(200);
     }
     catch {
-        res.status(500);
+        res.sendStatus(500);
     }
 })
 
@@ -111,6 +117,28 @@ app.get("/practices/me", checkToken, async (req: Request, res: Response) => {
             res.sendStatus(403);
             return;
         }
+        const result = await db.getMyPractice(payload.id);
+        res.send(result).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
+//get practice data by id
+app.get("/practices/:id", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const result = await db.getPractice(req.params.id as unknown as number)
+        if (result === "notfound") {
+            res.sendStatus(404);
+            return;
+        }
+        res.send(result).status(200);
     }
     catch {
         res.sendStatus(500);
@@ -118,17 +146,27 @@ app.get("/practices/me", checkToken, async (req: Request, res: Response) => {
 })
 
 //status change
-app.put("", async (req: Request, res: Response) => {
-    const index = req.body.index as number;
+app.put("/practices/:id/status", checkToken, async (req: Request, res: Response) => {
+    const payload = parseJWTpayload(req.body.token as string);
+    if (payload.role !== "supervisor") {
+        res.sendStatus(403);
+        return;
+    }
+    const index = req.body.studentIndex as number;
+    const statusId = req.body.statusId as number;
+    const practiceId = req.params.id as unknown as number;
+    console.log(req.body)
     const gelearn = `${index}@g.elearn.uz.zgora.pl`;
     const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
+    await db.updateStatus(statusId, practiceId);
+    res.sendStatus(200);
 
-    let mail = await transporter.sendMail({
-        from: '"FROM" <foo@example.com>', // sender address
-        to: `${zimbra}, ${gelearn}`, // list of receivers
-        subject: "Zmiana statusu praktyki", // Subject line
-        html: "Treść", // html body
-    });
+    // await transporter.sendMail({
+    //     from: '"FROM" <foo@example.com>', // sender address
+    //     to: `${zimbra}, ${gelearn}`, // list of receivers
+    //     subject: "Zmiana statusu praktyki", // Subject line
+    //     html: "Treść", // html body
+    // });
 })
 
 //get list of students
@@ -139,7 +177,7 @@ app.get("/students", checkToken, async (req: Request, res: Response) => {
             res.sendStatus(403);
             return;
         }
-        const students = await getStudents();
+        const students = await db.getStudents();
         if (students.length === 0) {
             res.sendStatus(404);
             return;
@@ -150,5 +188,18 @@ app.get("/students", checkToken, async (req: Request, res: Response) => {
         res.sendStatus(500);
     }
 })
+
+//get list of statuses
+app.get("/statuses", async (req: Request, res: Response) => {
+    try {
+        const statuse = await db.getAllStatuses();
+        res.send(statuse).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
+
 
 app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));

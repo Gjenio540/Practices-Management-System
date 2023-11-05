@@ -3,19 +3,21 @@ import { getToken } from "../modules/auth";
 import { host } from '../modules/env';
 import Loading from "../components/Loading";
 import Error from "../components/Error";
-
+import styles from "./sass/DetailPage.module.scss"
+import { practiceData } from "../modules/interfaces";
 
 const StudentPage = () => {
-    const [studentData, setStudentData] = useState();
+
+    const [data, setData] = useState<practiceData>();
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
-        async function getStudentData() {
+        async function getStudentData(): Promise<void> {
             setLoading(true);
             try {
                 const token = getToken();
-                const data = await fetch(`${host}/`,{
+                const data = await fetch(`${host}/practices/me`,{
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -28,7 +30,7 @@ const StudentPage = () => {
                     return;
                 }
                 const json = await data.json();
-                setStudentData(json);
+                setData(json);
                 setLoading(false);
             }
             catch {
@@ -45,7 +47,16 @@ const StudentPage = () => {
         return(<Error message={"Error"}/>)    
 
     return(
-        <h1>Student view 👩‍🎓</h1>
+        <div className={styles.content}>
+            <div className={styles.container}>
+                <div className={styles.info}>
+                    <h1>{data?.firstname} {data?.lastname}</h1>
+                    <h2>{"Grupa: "+data?.studGroup}</h2>
+                    <h2>{"Kierunek: "+data?.areaName}</h2>
+                    <h2>{"Status praktyki: "+data?.statusName}</h2>
+                </div>
+            </div>
+        </div>
     );
 }
 
