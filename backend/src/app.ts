@@ -15,8 +15,7 @@ const app = express();
 app.use(cors()); //allow access from the same origin
 app.use(express.json());
 
-
-//signup student
+//signup student from form
 app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
     try {
         //---Token validation---
@@ -25,6 +24,8 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
             res.sendStatus(403);
             return;
         }
+        //---Get supervisor data---
+        const supervisor = await db.getSupervisor(payload.id);
         //---Data initialization---
         const name = req.body.name as string;
         const lastname = req.body.lastname as string;
@@ -42,7 +43,7 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
 
         //---Send Mail----
         await transporter.sendMail({
-            from: '"FROM" <foo@example.com>', // sender address
+            from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
             to: `${zimbra}, ${gelearn}`, // list of receivers
             subject: "Konto", // Subject line
             html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
@@ -57,6 +58,58 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         res.sendStatus(500);
     }
 })
+
+//signup student from csv file
+app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
+    try {
+        //---Token validation---
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        //---Get supervisor data---
+        const supervisor = await db.getSupervisor(payload.id);
+        type StudentData = {
+            firstname :string
+            lastname: string
+            indexNum: string
+            studGroup: string
+            area: string
+        }
+
+        req.body.students.forEach(async (student: StudentData) => {
+            const name = req.body.name as string;
+            const lastname = req.body.lastname as string;
+            const index = req.body.index as string;
+            const areaId = req.body.areaId as number;
+            const group = req.body.group as string;
+            const password = generatePassword();
+            const gelearn = `${student.indexNum}@g.elearn.uz.zgora.pl`;
+            const zimbra = `${student.indexNum}@poczta.stud.uz.zgora.pl`;
+
+            const user = await db.insertUser(req.body.index, await hashPassword(password), "student");
+            const userId = user.insertId;
+            await db.insertStudent(name, lastname, index, areaId, group, userId);
+
+            await transporter.sendMail({
+                from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+                to: `${zimbra}, ${gelearn}`, // list of receivers
+                subject: "Konto", // Subject line
+                html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+                        Twoje dane logowania to: <br>
+                        login: ${index} <br>
+                        hasło: ${password}
+                        `, // html body
+            });
+        });
+        res.sendStatus(201);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
 
 //login user
 app.post("/auth/login", async (req: Request, res: Response) => {
@@ -87,6 +140,21 @@ app.post("/auth/login", async (req: Request, res: Response) => {
     catch {
         res.sendStatus(500);
     }
+})
+
+//update user password
+app.put("/auth/password", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        const newPassword = req.body.password as string;
+        const hashedPassword = await hashPassword(newPassword);
+        const result = await db.updatePassword(payload.id, hashedPassword);
+        res.sendStatus(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+    
 })
 
 //get all practices preview data
@@ -152,21 +220,23 @@ app.put("/practices/:id/status", checkToken, async (req: Request, res: Response)
         res.sendStatus(403);
         return;
     }
+    const supervisor = await db.getSupervisor(payload.id);
     const index = req.body.studentIndex as number;
     const statusId = req.body.statusId as number;
+    const statusName = req.body.statusName;
     const practiceId = req.params.id as unknown as number;
-    console.log(req.body)
     const gelearn = `${index}@g.elearn.uz.zgora.pl`;
     const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
     await db.updateStatus(statusId, practiceId);
-    res.sendStatus(200);
+    
 
     // await transporter.sendMail({
-    //     from: '"FROM" <foo@example.com>', // sender address
+    //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
     //     to: `${zimbra}, ${gelearn}`, // list of receivers
     //     subject: "Zmiana statusu praktyki", // Subject line
-    //     html: "Treść", // html body
+    //     html: `Twój status praktyki zmienił się na: <b>${statusName}</b>`, // html body
     // });
+    res.sendStatus(200);
 })
 
 //get list of students

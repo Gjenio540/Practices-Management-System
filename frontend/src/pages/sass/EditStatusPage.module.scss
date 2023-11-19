@@ -1,13 +1,11 @@
 .content {
-    position: fixed;
     display: flex;
     flex-direction: column;
     //justify-content: center;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 150px);
     background-color: #212121;
-    z-index: 2;
 }
 
 .container {

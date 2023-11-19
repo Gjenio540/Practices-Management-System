@@ -9,10 +9,11 @@ CREATE TABLE users (
 
 CREATE TABLE supervisors (
     id INT NOT NULL AUTO_INCREMENT,
-    fistname VARCHAR(20),
-    lastname VARCHAR(20),
-    email VARCHAR(50),
-    userId INT,
+    firstname VARCHAR(20) NOT NULL,
+    lastname VARCHAR(20) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    userId INT NOT NULL,
+    UNIQUE(id),
     PRIMARY KEY (id),
     FOREIGN KEY (userId) REFERENCES users(id)
 );
@@ -21,6 +22,7 @@ CREATE TABLE areas (
     id INT NOT NULL AUTO_INCREMENT,
     areaName VARCHAR(50),
     supervisorId INT NOT NULL,
+    UNIQUE(id),
     PRIMARY KEY (id),
     FOREIGN KEY (supervisorId) REFERENCES supervisors(id)
 );
@@ -33,7 +35,7 @@ CREATE TABLE students (
     studGroup VARCHAR(20),
     areaId INT,
     userId INT,
-    UNIQUE(firstname, lastname, indexNum),
+    UNIQUE(id, indexNum),
     PRIMARY KEY (id),
     FOREIGN KEY (areaId) REFERENCES areas(id),
     FOREIGN KEY (userId) REFERENCES users(id)
@@ -41,21 +43,26 @@ CREATE TABLE students (
 
 CREATE TABLE statuses (
     id int NOT NULL AUTO_INCREMENT,
-    statusName VARCHAR(100),
+    statusName VARCHAR(100) NOT NULL,
+    UNIQUE(id),
     PRIMARY KEY (id)
 );
 
 CREATE TABLE practices (
     id int NOT NULL AUTO_INCREMENT,
-    studentId int,
+    studentId int NOT NULL,
+    typeOfpractice VARCHAR(50),
     companyName VARCHAR(100),
     companyAdress VARCHAR(100),
+    nip VARCHAR(11),
+    regon VARCHAR(9),
     practiceStatus INT,
     semesterNumber INT,
     startDate DATE,
     endDate DATE,
     numOfHours INT,
     statusDate date,
+    UNIQUE(id),
     PRIMARY KEY (id),
     FOREIGN KEY (studentId) REFERENCES students(id),
     FOREIGN KEY (practiceStatus) REFERENCES statuses(id)

@@ -26,12 +26,15 @@ export interface practiceData {
     indexNum: string
     areaName: string
     practiceId: number
+    typeOfpractice: string
     companyName: string
     companyAdress: string
+    nip: string
+    regon: string
     statusNumber: number
     statusName: string
     statusDate: string
-    startdate: string
+    startDate: string
     endDate: string
     numOfHours: number
     superVisorsName: string

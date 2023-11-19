@@ -70,7 +70,7 @@ const PracticesPage = () => {
                 <div className={styles.options}>
                     <h3>Kierunek</h3>
                     <div className={styles.option}>
-                        <input type="radio" id="course" name="course" value={""} onChange={() => setCourse("")} checked />
+                        <input type="radio" id="course" name="course" value={""} onChange={() => setCourse("")} defaultChecked />
                         <label htmlFor="course">Wszystkie</label>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ const PracticesPage = () => {
                 <h2 className="centeredText">Sortowanie</h2>
                 <div className={styles.options}>
                     <div className={styles.option}>
-                        <input type="radio" name="sort" value={"name"} onClick={() => setSort("name")} checked />
+                        <input type="radio" name="sort" value={"name"} onClick={() => setSort("name")} defaultChecked />
                         <label htmlFor="status">Nazwisko</label>
                     </div>
                     <div className={styles.option}>

@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getToken } from '../modules/auth';
 import { host } from '../modules/env';
-import ChangeStatusModal from '../components/ChangeStatusModal';
-import ChangeDataModal from '../components/ChangeDataModal';
 import styles from '../pages/sass/DetailPage.module.scss'
 import Loading from '../components/Loading';
 import Error from '../components/Error';
@@ -15,8 +13,6 @@ const DatailsPage = () => {
     const [data, setData] = useState<practiceData>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [openStatusModal, setOpenStatusModal] = useState<boolean>(false);
-    const [openDataModal, setOpenDataModal] = useState<boolean>(false);
 
     useEffect(() => {
         async function getData(): Promise<void> {
@@ -60,17 +56,20 @@ const DatailsPage = () => {
                     <h1>{data?.firstname+" "+data?.lastname}</h1>
                     <h2>{"Grupa: "+data?.studGroup}</h2>
                     <h2>{"Kierunek: "+data?.areaName}</h2>
-                    <h2>{"Nazwa zakładu: "+data?.companyName}</h2>
+                    <h2>{"Rodzaj praktyki: "+data?.typeOfpractice}</h2>
+                    <h2>{"Nazwa firmy: "+data?.companyName}</h2>
+                    <h2>{"Adres firmy: "+data?.companyAdress}</h2>
+                    <h2>{"Data rozpoczęcia praktyki: "+data?.startDate}</h2>
+                    <h2>{"Data zakończenia praktyki: "+data?.endDate}</h2>
+                    <h2>{"Wymiar praktyki: "+data?.numOfHours+" godzin"}</h2>
                     <h2>{"Status praktyki: "+data?.statusName}</h2>
                 </div>
                 <div className={styles.options}>
-                    <button className="button bt-blue" onClick={() => {setOpenDataModal(true)}}>Edytuj dane</button>
-                    <button className="button bt-blue" onClick={() => {setOpenStatusModal(true)}}>Zmień status</button>
+                    <Link className="button bt-blue" to={"/praktyki/dane"} state={data}>Edytuj dane</Link>
+                    <Link className="button bt-blue" to={"/praktyki/status"} state={data}>Zmień status</Link>
                     <Link className="button bt-red" to={"/praktyki"}>Powrót</Link>
                 </div>
             </div>
-            <ChangeStatusModal open={openStatusModal} setOpen={setOpenStatusModal} data={data}/>
-            <ChangeDataModal open={openDataModal} setOpen={setOpenDataModal} data={data}/>
         </div>
     );
 }

@@ -50,9 +50,15 @@ const StudentPage = () => {
         <div className={styles.content}>
             <div className={styles.container}>
                 <div className={styles.info}>
-                    <h1>{data?.firstname} {data?.lastname}</h1>
+                    <h1>{data?.firstname+" "+data?.lastname}</h1>
                     <h2>{"Grupa: "+data?.studGroup}</h2>
                     <h2>{"Kierunek: "+data?.areaName}</h2>
+                    <h2>{"Rodzaj praktyki: "+data?.typeOfpractice}</h2>
+                    <h2>{"Nazwa firmy: "+data?.companyName}</h2>
+                    <h2>{"Adres firmy: "+data?.companyAdress}</h2>
+                    <h2>{"Data rozpoczęcia praktyki: "+data?.startDate}</h2>
+                    <h2>{"Data zakończenia praktyki: "+data?.endDate}</h2>
+                    <h2>{"Wymiar praktyki: "+data?.numOfHours+" godzin"}</h2>
                     <h2>{"Status praktyki: "+data?.statusName}</h2>
                 </div>
             </div>
