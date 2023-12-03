@@ -12,7 +12,7 @@ dotenv.config();
 const port = process.env.APP_PORT as unknown as number;
 const jwtSecret = process.env.JWT_SECRET as unknown as string;
 const app = express();
-app.use(cors()); //allow access from the same origin
+app.use(cors()); //allow access from the same origin (delete if not needed)
 app.use(express.json());
 
 //signup student from form
@@ -27,7 +27,7 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         //---Get supervisor data---
         const supervisor = await db.getSupervisor(payload.id);
         //---Data initialization---
-        const name = req.body.name as string;
+        const firstname = req.body.firstname as string;
         const lastname = req.body.lastname as string;
         const index = req.body.index as string;
         const areaId = req.body.areaId as number;
@@ -36,10 +36,9 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         const gelearn = `${index}@g.elearn.uz.zgora.pl`;
         const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
         //---Insert user and student---
-        const user = await db.insertUser(req.body.index, await hashPassword(password), "student");
+        const user = await db.insertUser(index, await hashPassword(password), "student");
         const userId = user.insertId;
-        const student = await db.insertStudent(name, lastname, index, areaId, group, userId);
-        //---Check DB status---
+        await db.insertStudent(firstname, lastname, index, areaId, group, userId);
 
         //---Send Mail----
         await transporter.sendMail({
@@ -60,16 +59,13 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
 })
 
 //signup student from csv file
-app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
+app.post("/auth/register/student/file", checkToken, async (req: Request, res: Response) => {
     try {
-        //---Token validation---
         const payload = parseJWTpayload(req.body.token as string);
         if (payload.role !== "supervisor") {
             res.sendStatus(403);
             return;
         }
-        //---Get supervisor data---
-        const supervisor = await db.getSupervisor(payload.id);
         type StudentData = {
             firstname :string
             lastname: string
@@ -77,31 +73,42 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
             studGroup: string
             area: string
         }
-
+        const areas = await db.getAreas(payload.id);
         req.body.students.forEach(async (student: StudentData) => {
-            const name = req.body.name as string;
-            const lastname = req.body.lastname as string;
-            const index = req.body.index as string;
-            const areaId = req.body.areaId as number;
-            const group = req.body.group as string;
+            const name = student.firstname as string;
+            const lastname = student.lastname as string;
+            const index = student.indexNum as string;
+            const areaString = student.area as string;
+            console.log(areaString);
+            const group = student.studGroup as string;
             const password = generatePassword();
-            const gelearn = `${student.indexNum}@g.elearn.uz.zgora.pl`;
-            const zimbra = `${student.indexNum}@poczta.stud.uz.zgora.pl`;
-
-            const user = await db.insertUser(req.body.index, await hashPassword(password), "student");
+            const gelearn = `${index}@g.elearn.uz.zgora.pl`;
+            const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
+            
+            let areaId;
+            if(areas) {
+                for(let i=0; i<areas?.length; i++) {
+                    if(areaString === await areas[i].areaName) {
+                        areaId = await areas[i].id;
+                        break;
+                    }
+                }
+            }
+            
+            const user = await db.insertUser(index, await hashPassword(password), "student");
             const userId = user.insertId;
             await db.insertStudent(name, lastname, index, areaId, group, userId);
 
-            await transporter.sendMail({
-                from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
-                to: `${zimbra}, ${gelearn}`, // list of receivers
-                subject: "Konto", // Subject line
-                html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
-                        Twoje dane logowania to: <br>
-                        login: ${index} <br>
-                        hasło: ${password}
-                        `, // html body
-            });
+            // await transporter.sendMail({
+            //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+            //     to: `${zimbra}, ${gelearn}`, // list of receivers
+            //     subject: "Konto", // Subject line
+            //     html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+            //             Twoje dane logowania to: <br>
+            //             login: ${index} <br>
+            //             hasło: ${password}
+            //             `, // html body
+            // });
         });
         res.sendStatus(201);
     }
@@ -148,7 +155,7 @@ app.put("/auth/password", checkToken, async (req: Request, res: Response) => {
         const payload = parseJWTpayload(req.body.token as string);
         const newPassword = req.body.password as string;
         const hashedPassword = await hashPassword(newPassword);
-        const result = await db.updatePassword(payload.id, hashedPassword);
+        await db.updatePassword(payload.id, hashedPassword);
         res.sendStatus(200);
     }
     catch {
@@ -213,6 +220,33 @@ app.get("/practices/:id", checkToken, async (req: Request, res: Response) => {
     }
 })
 
+//post practice
+app.post("/practices", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const studentId = req.body.studentId as number;
+        const companyName = req.body.companyName as string;
+        const companyAdress = req.body.companyAdress as string;
+        const typeOfpractice =  req.body.typeOfpractice as string
+        const nip = req.body.nip as string;
+        const regon = req.body.regon as string;
+        //const practiceStatus = ?;
+        const semesterNumber =  req.body.semesterNumber as number;
+        const startDate = req.body.startDate as string;
+        const endDate = req.body.endDate as string
+
+        //const result = await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate);
+        //await db.insertLog(result.insertId);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
 //status change
 app.put("/practices/:id/status", checkToken, async (req: Request, res: Response) => {
     const payload = parseJWTpayload(req.body.token as string);
@@ -247,7 +281,7 @@ app.get("/students", checkToken, async (req: Request, res: Response) => {
             res.sendStatus(403);
             return;
         }
-        const students = await db.getStudents();
+        const students = await db.getStudents(payload.id);
         if (students.length === 0) {
             res.sendStatus(404);
             return;
@@ -259,17 +293,89 @@ app.get("/students", checkToken, async (req: Request, res: Response) => {
     }
 })
 
-//get list of statuses
-app.get("/statuses", async (req: Request, res: Response) => {
+app.put("/students", checkToken, async (req: Request, res: Response) => {
     try {
-        const statuse = await db.getAllStatuses();
-        res.send(statuse).status(200);
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const id = req.body.id as number;
+        const firstname = req.body.firstname as string;
+        const lastname = req.body.lastname as string;
+        const indexNum = req.body.indexNum as string;
+        const studGroup = req.body.studGroup as string;
+        const specialty = req.body.specialty as string;
+        const areaid = req.body.areaId as number;
+        await db.updateStudent(id, firstname, lastname, indexNum, studGroup, specialty, areaid);
+        res.sendStatus(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+    
+})
+
+app.delete("/students/:id", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const id = req.params.id as unknown as number;
+        await db.deletePractice(id);
+        await db.deleteStudent(id);
+        res.sendStatus(200);
+
     }
     catch {
         res.sendStatus(500);
     }
 })
 
+//get logs
+app.get("/logs", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.status(403);
+            return;
+        }
+        const logs = await db.getLogs(payload.id);
+        if (logs.length === 0) {
+            res.sendStatus(404);
+            return;
+        }
+        res.send(logs).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
+//get list of statuses
+app.get("/statuses", async (req: Request, res: Response) => {
+    try {
+        const statuses = await db.getAllStatuses();
+        res.send(statuses).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
+//get list of areas
+app.get("/areas", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        const areas = await db.getAreas(payload.id);
+        res.send(areas).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
 
 
 app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));

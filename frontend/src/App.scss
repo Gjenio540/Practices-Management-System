@@ -138,3 +138,21 @@ select {
     }
 }
 
+input[type="text"], [type="number"],[type="date"],[type="password"] {
+    //width: 75%;
+    //height: 30px;
+    font-family: 'Lato';
+    border-radius: 3px;
+    border-color: transparent;
+    background: #525252;
+    font-size: 1.25rem;
+    padding: 5px 10px;
+    font-weight: 400;
+    border-style: solid;
+    vertical-align: baseline;
+    &:focus {
+        box-shadow: inset;
+        outline: none;
+    }
+}
+

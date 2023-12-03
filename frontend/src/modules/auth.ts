@@ -1,4 +1,4 @@
-import type { user } from "./types";
+import type { user } from "./interfaces"
 
 export function setUser(user: user): void {
     window.sessionStorage.setItem('user', JSON.stringify(user));
@@ -25,3 +25,15 @@ export function getToken(): string | undefined {
     const user = getUser();
     return user?.token;
 }
+
+export function getRole(): string | undefined{
+    const token = getToken();
+    if(token)
+    {
+        const payload = atob(token.split('.')[1])
+        const parsed = JSON.parse(payload);
+        return parsed.role;
+    }
+    return undefined;
+}
+    

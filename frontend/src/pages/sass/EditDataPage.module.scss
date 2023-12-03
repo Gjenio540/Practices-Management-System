@@ -55,23 +55,6 @@ label {
     font-size: 1.25rem;
     font-weight: 600;
 }
-input[type="text"],[type="date"] {
-    //width: 75%;
-    //height: 30px;
-    font-family: 'Lato';
-    border-radius: 3px;
-    border-color: transparent;
-    background: #525252;
-    font-size: 1.25rem;
-    padding: 5px 10px;
-    font-weight: 400;
-    border-style: solid;
-    vertical-align: baseline;
-    &:focus {
-        box-shadow: inset;
-        outline: none;
-    }
-}
 
 
 

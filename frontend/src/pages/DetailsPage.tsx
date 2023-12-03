@@ -5,12 +5,13 @@ import { host } from '../modules/env';
 import styles from '../pages/sass/DetailPage.module.scss'
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import { practiceData } from '../modules/interfaces';
+import { logData, practiceData } from '../modules/interfaces';
 
 const DatailsPage = () => {
 
     const { id } = useParams<string>();
     const [data, setData] = useState<practiceData>();
+    const [logs, setLogs] = useState<logData[]>()
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
 

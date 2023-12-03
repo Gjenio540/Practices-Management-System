@@ -11,9 +11,14 @@ const credentials: mysql2.ConnectionOptions = {
   database: process.env.DB_DATABASE
 };
 
-export async function getStudents() {
+export async function getStudents(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<RowDataPacket[]>('SELECT students.firstname, students.lastname, students.indexNum, students.studGroup, areas.areaName FROM students INNER JOIN areas on students.areaId = areas.id;');
+  const result = await connection.query<RowDataPacket[]>(`SELECT students.id, students.firstname, students.lastname, students.indexNum, students.studGroup, students.specialty, areas.areaName 
+  FROM students 
+  INNER JOIN areas on students.areaId = areas.id
+  INNER JOIN supervisors on areas.supervisorId = supervisors.id
+  WHERE supervisors.userId = ?
+  ;`, [id]);
   connection.end();
   return result[0];
 }
@@ -32,15 +37,15 @@ export async function searchUser(username: string) {
 
 export async function insertUser(username: string, password: string, role: string) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket>('INSERT INTO `users` (`username`, `password`, `role`) VALUES (?, ?, ?)', [username, password, role]);
+  const result = await connection.query<OkPacket>('INSERT INTO users (`username`, `userPassword`, `userRole`) VALUES (?, ?, ?)', [username, password, role]);
   connection.end();
   return result[0];
 }
 
-export async function insertStudent(name: string, lastname: string, index: string, areaId: number, group: string, userId: number) {
+export async function insertStudent(firstname: string, lastname: string, index: string, areaId: number, studGroup: string, userId: number) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<OkPacket>(
-    'INSERT INTO `users` (`name`, `lastname`, `index`, `areaId`, group, userId) VALUES (?, ?, ?, ?, ?, ?);',[name, lastname, index, areaId, group, userId]
+    'INSERT INTO students (`firstname`, `lastname`, `indexNum`, `studGroup`, `areaId`, `userId`) VALUES (?, ?, ?, ?, ?, ?);',[firstname, lastname, index, studGroup, areaId, userId]
   );
   connection.end();
   return result[0];
@@ -106,6 +111,23 @@ export async function getPractice(id: number) {
   return "notfound";
 }
 
+export async function getLogs(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<RowDataPacket[]>('Select * FROM logs WHERE practiceId = id', [id]);
+  connection.end();
+  if (Array.isArray(result[0]) && result[0].length > 0) {
+    return result[0][0];
+  }
+  return "notfound";
+}
+
+export async function insertLog(id: number, message: string, logDate: string) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<OkPacket>('INSERT INTO logs (logMsg, practiceId, logDate)', [id]);
+  connection.end();
+  return result[0];
+}
+
 export async function getAllStatuses() {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>('SELECT * FROM statuses');
@@ -113,7 +135,7 @@ export async function getAllStatuses() {
   if (Array.isArray(result[0]) && result[0].length > 0) {
     return result[0];
   }
-  // return "notfound";
+  return "notfound";
 }
 
 export async function updateStatus(practiceStatus: number, practiceId: number) {
@@ -125,7 +147,52 @@ export async function updateStatus(practiceStatus: number, practiceId: number) {
 
 export async function updatePassword(id: number, password: string) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket>('UPDATE users SET password = ? WHERE id = ?;', [password, id]);
+  const result = await connection.query<OkPacket>('UPDATE users SET userPassword = ? WHERE id = ?;', [password, id]);
   connection.end();
   return result[0];
 }
+
+export async function insertPractice(id: number, type: string, companyName: string, companyAdress: string, nip: string, regon: string, practiceStatus: number, semesterNumber: number, startDate: string, endDate: string) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<OkPacket>('INSERT INTO practices (studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?););', [id, type, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate]);
+  connection.end();
+  return result[0];
+}
+
+export async function getAreas(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<RowDataPacket[]>(`SELECT areas.id, areas.areaName 
+  FROM areas 
+  INNER JOIN supervisors ON areas.supervisorId = supervisors.id
+  INNER JOIN users ON supervisors.userId = users.id
+  WHERE users.id = ?;`, [id]);
+  connection.end();
+  if (Array.isArray(result[0]) && result[0].length > 0) {
+    return result[0];
+  }
+  // return "notfound";
+}
+
+export async function updateStudent(id: number, firstname: string, lastname: string, indexNum: string, studGroup: string, specialty: string, areaId: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<OkPacket[]>('UPDATE students SET firstname = ?, lastname = ?, indexNum = ?, studGroup = ?, specialty = ?, areaId = ? WHERE id = ?', [firstname, lastname, indexNum, studGroup, specialty, areaId, id]);
+  connection.end();
+  return result[0];
+}
+
+export async function deletePractice(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<OkPacket[]>('DELETE FROM Practices WHERE studentId = ?;', [id]);
+  connection.end();
+  return result[0];
+}
+
+export async function deleteStudent(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<OkPacket[]>('DELETE FROM Students WHERE id = ?;', [id]);
+  connection.end();
+  return result[0];
+}
+
+ 
+

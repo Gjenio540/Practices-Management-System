@@ -6,7 +6,7 @@ import Error from "../components/Error";
 import styles from "./sass/DetailPage.module.scss"
 import { practiceData } from "../modules/interfaces";
 
-const StudentPage = () => {
+const MyPage = () => {
 
     const [data, setData] = useState<practiceData>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -66,4 +66,4 @@ const StudentPage = () => {
     );
 }
 
-export default StudentPage
+export default MyPage

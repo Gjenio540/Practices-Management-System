@@ -20,16 +20,16 @@ INSERT INTO areas VALUES (2, "Biznes Elektroniczny", 1);
 INSERT INTO areas VALUES (3, "Elektrotechnika", 2);
 INSERT INTO areas VALUES (4, "Automatyka i Robotyka", 2);
 
-INSERT INTO students VALUES (1, "Sara", "Michalak", "100001", "21INF-SP", 1, 1);
-INSERT INTO students VALUES (2, "Damian", "Borowski", "100002", "22INF-SP", 1, 1);
-INSERT INTO students VALUES (3, "Adrian", "Pietrzak", "100003", "23INF-SP", 1, 1);
-INSERT INTO students VALUES (4, "Danuta", "Markiewicz", "1000004", "21E-B-SP", 2, 1);
-INSERT INTO students VALUES (5, "Mikołaj", "Chmielewski", "1000005", "21E-B-SP", 2, 1);
-INSERT INTO students VALUES (6, "Eliza", "Madej", "1000006", "21E-SP", 3, 1);
-INSERT INTO students VALUES (7, "Jakub", "Wysocki", "1000007", "21E-SP", 3, 1);
-INSERT INTO students VALUES (8, "Norbert", "Michalak", "1000008", "21E-SP", 3, 1);
-INSERT INTO students VALUES (9, "Sebastian", "Jasiński", "1000009", "21AiR-SP", 4, 1);
-INSERT INTO students VALUES (10, "Marta", "Wesołowska", "1000010", "22AiR-SP", 4, 1);
+INSERT INTO students VALUES (1, "Sara", "Michalak", "100001", "21INF-SP", "-",1, 1);
+INSERT INTO students VALUES (2, "Damian", "Borowski", "100002", "22INF-SP", "-", 1, 1);
+INSERT INTO students VALUES (3, "Adrian", "Pietrzak", "100003", "23INF-SP", "-", 1, 1);
+INSERT INTO students VALUES (4, "Danuta", "Markiewicz", "1000004", "21E-B-SP", "-", 2, 1);
+INSERT INTO students VALUES (5, "Mikołaj", "Chmielewski", "1000005", "21E-B-SP", "-", 2, 1);
+INSERT INTO students VALUES (6, "Eliza", "Madej", "1000006", "21E-SP", "-", 3, 1);
+INSERT INTO students VALUES (7, "Jakub", "Wysocki", "1000007", "21E-SP", "-", 3, 1);
+INSERT INTO students VALUES (8, "Norbert", "Michalak", "1000008", "21E-SP", "-", 3, 1);
+INSERT INTO students VALUES (9, "Sebastian", "Jasiński", "1000009", "21AiR-SP", "-", 4, 1);
+INSERT INTO students VALUES (10, "Marta", "Wesołowska", "1000010", "22AiR-SP", "-", 4, 1);
 
 INSERT INTO statuses VALUES(1, "Nowa praktyka");
 INSERT INTO statuses VALUES(2, "Zaliczona");

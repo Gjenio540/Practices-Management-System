@@ -45,3 +45,25 @@ export interface statusData {
     id: number
     statusName: string
 }
+
+export interface areaData {
+    id: number,
+    areaName: string
+}
+
+export interface logData {
+    id: number
+    logMsg: string
+    logDate: string
+    practiceId: number
+}
+
+export interface studentData {
+    id: number,
+    firstname: string,
+    lastname: string,
+    indexNum: string,
+    studGroup: string,
+    areaName: string
+    specialty?: string
+}

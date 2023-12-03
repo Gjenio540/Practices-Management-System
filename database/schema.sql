@@ -33,6 +33,7 @@ CREATE TABLE students (
     lastname VARCHAR(20),
     indexNum VARCHAR(6),
     studGroup VARCHAR(20),
+    specialty VARCHAR(50),	
     areaId INT,
     userId INT,
     UNIQUE(id, indexNum),
@@ -61,9 +62,18 @@ CREATE TABLE practices (
     startDate DATE,
     endDate DATE,
     numOfHours INT,
-    statusDate date,
     UNIQUE(id),
     PRIMARY KEY (id),
     FOREIGN KEY (studentId) REFERENCES students(id),
     FOREIGN KEY (practiceStatus) REFERENCES statuses(id)
+);
+
+CREATE TABLE logs (
+    id int NOT NULL AUTO_INCREMENT,
+    practiceId int NOT NULL,
+    logDate date NOT NULL,
+    logMsg VARCHAR(100) NOT NULL,
+    UNIQUE(id),
+    PRIMARY KEY (id),
+    FOREIGN KEY (practiceId) REFERENCES practices(id)
 );

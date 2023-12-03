@@ -16,18 +16,7 @@ const EditData = () => {
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <div className={styles.flex}>
                         <div className={styles.data}>
-                            <h1>Dane Studenta</h1>
-                            <label htmlFor="firstname">Imię</label>
-                            <input type="text" id="firstname" defaultValue={state.firstname}/>
-                            <label htmlFor="lastname">Nazwisko</label>
-                            <input type="text" id="lastname" defaultValue={state.lastname}/>
-                            <label htmlFor="indexNumber">Numer indeksu</label>
-                            <input type="text" id="lastname" defaultValue={state.indexNum}/>
-                            <label htmlFor="group">Grupa</label>
-                            <input type="text" id="group" defaultValue={state.studGroup}/>
-                        </div>
-                        <div className={styles.data}>
-                            <h1>Dane Praktyki</h1>
+                            <h1>Edycja danych praktyki</h1>
                             <label htmlFor="">Nazwa firmy</label>
                             <input type="text" defaultValue={state.companyName}/>
                             <label htmlFor="">Adres firmy</label>
