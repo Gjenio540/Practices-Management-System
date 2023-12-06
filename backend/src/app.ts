@@ -331,7 +331,6 @@ app.delete("/students/:id", checkToken, async (req: Request, res: Response) => {
         await db.deletePractice(id);
         await db.deleteStudent(id);
         res.sendStatus(200);
-
     }
     catch {
         res.sendStatus(500);

@@ -23,11 +23,17 @@ const StudentsPage = () => {
                         'Authorization': `Bearer ${getToken()}`
                     }
                 })
+                if(response.status === 404) {
+                    setLoading(false);
+                    setError("Brak danych do wyświetlenia");
+                    return;
+                }
                 if(!response.ok) {
                     setLoading(false);
                     setError(response.status + response.statusText);
                     return;
                 }
+
                 const json = await response.json();
                 setData(json);
                 setLoading(false);
@@ -68,10 +74,16 @@ const StudentsPage = () => {
         return <Loading />
     
     if(error)
-        return <Error message={error} />
+        return (
+        <>
+        <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
+        <Error message={error} />
+        </>
+        )
 
     return(
         <>
+        <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
         <h1 className="centeredText">Lista studentów</h1>
         {data?.map(students => (
             <div className={styles.student} key={students.id}>
@@ -81,9 +93,11 @@ const StudentsPage = () => {
                 <p key={students.studGroup}>{students.studGroup}</p>
                 <p key={students.areaName}>{students.areaName}</p>
                 <p key={students.specialty}>{students.specialty}</p>
-                <Link to={"/studenci/dane"} className="button bt-blue" state={students}>Edytuj</Link>
-                <Link to={"/studenci/praktyka"} className="button bt-blue" state={students}>Dodaj praktyke</Link>
-                <button className="button bt-red" onClick={() => deleteStudent(students.id)}>Usuń</button>
+                <div className={styles.options}>
+                    <Link to={"/studenci/dane"} className="button bt-blue" state={students}>Edytuj</Link>
+                    <Link to={"/studenci/praktyka"} className="button bt-blue" state={students}>Dodaj praktyke</Link>
+                    <button className="button bt-red" onClick={() => deleteStudent(students.id)}>Usuń</button>
+                </div>
             </div>
        ))}
         </>

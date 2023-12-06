@@ -182,14 +182,14 @@ export async function updateStudent(id: number, firstname: string, lastname: str
 
 export async function deletePractice(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket[]>('DELETE FROM Practices WHERE studentId = ?;', [id]);
+  const result = await connection.query<OkPacket[]>('DELETE FROM practices WHERE studentId = ?;', [id]);
   connection.end();
   return result[0];
 }
 
 export async function deleteStudent(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket[]>('DELETE FROM Students WHERE id = ?;', [id]);
+  const result = await connection.query<OkPacket[]>('DELETE FROM students WHERE id = ?;', [id]);
   connection.end();
   return result[0];
 }

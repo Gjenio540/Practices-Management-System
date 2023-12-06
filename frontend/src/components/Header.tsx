@@ -18,10 +18,10 @@ const Header = () => {
         
     return(
         <header className={styles.header}>
-            <div className={styles.logo}>
+            <Link to="/" className={styles.logo}>
                 <img src={uz_logo} alt="uz_logo" width={"96px"} height={"72px"}/>
-                <Link to="/"><h1>System Zarządzania Praktykami</h1></Link>
-            </div>
+                <h1 className={styles.logoText}>System Zarządzania Praktykami</h1>
+            </Link>
             <div></div>
             <button className="button bt-red" onClick={logOut}>Wyloguj</button>
         </header>

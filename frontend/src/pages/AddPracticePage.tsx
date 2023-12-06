@@ -2,6 +2,7 @@ import { FormEvent, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom"
 import { getToken } from "../modules/auth";
 import { host } from "../modules/env";
+import styles from "./sass/EditDataPage.module.scss"
 
 const AddPracticePage = () => {
     const data = useLocation().state;
@@ -50,28 +51,37 @@ const AddPracticePage = () => {
     }
 
     return(
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="">Nazwa zakładu pracy</label> <br />
-            <input type="text" ref={companyNameRef}/><br /><br />
-            <label htmlFor="">Adres zakładu pracy</label><br />
-            <input type="text" ref={companyAddressRef}/><br /><br />
-            <label htmlFor="">NIP</label><br />
-            <input type="text" ref={nipRef}/><br /><br />
-            <label htmlFor="">REGON</label><br />
-            <input type="text"  ref={regonRef}/><br /><br />
-            <label htmlFor="">Rodzaj praktyki</label><br />
-            <input type="text" ref={typeRef}/><br /><br />
-            <label htmlFor="">Numer semestru</label><br />
-            <input type="text" ref={semesterRef}/><br /><br />
-            <label htmlFor="">Data rozpoczęcia praktyki</label><br />
-            <input type="date" ref={startRef}/><br /><br />
-            <label htmlFor="">Data zakończenia praktyki</label><br />
-            <input type="date" ref={endRef}/><br /><br />
-            <label htmlFor="">Wymiar praktyki (godziny)</label><br />
-            <input type="number"  defaultValue={160} ref={hoursRef}/><br /><br />
-            <button className="button bt-green" type="submit">Dodaj praktyke</button>
-            <button className="button bt-red" type="button" onClick={() => navigate(-1)}>Anuluj</button>
-        </form>
+        <div className={styles.content}>
+            <div className={styles.container}>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <div className={styles.flex}>
+                        <div className={styles.data}>
+                            <h1>Dodaj praktyke do {data.firstname + " " + data.lastname}</h1>
+                            <label htmlFor="">Nazwa zakładu pracy</label>
+                            <input type="text" ref={companyNameRef}/>
+                            <label htmlFor="">Adres zakładu pracy</label>
+                            <input type="text" ref={companyAddressRef}/>
+                            <label htmlFor="">NIP</label>
+                            <input type="text" ref={nipRef}/>
+                            <label htmlFor="">REGON</label>
+                            <input type="text"  ref={regonRef}/>
+                            <label htmlFor="">Rodzaj praktyki</label>
+                            <input type="text" ref={typeRef}/>
+                            <label htmlFor="">Numer semestru</label>
+                            <input type="text" ref={semesterRef}/>
+                            <label htmlFor="">Data rozpoczęcia praktyki</label>
+                            <input type="date" ref={startRef}/>
+                            <label htmlFor="">Data zakończenia praktyki</label>
+                            <input type="date" ref={endRef}/>
+                            <label htmlFor="">Wymiar praktyki (godziny)</label>
+                            <input type="number"  defaultValue={160} ref={hoursRef}/>
+                            <button className="button bt-green" type="submit">Dodaj praktyke</button>
+                            <button className="button bt-red" type="button" onClick={() => navigate(-1)}>Anuluj</button>
+                        </div>  
+                    </div>   
+                </form>
+            </div>  
+        </div>        
     )
 }
 

@@ -24,10 +24,14 @@
     .container{
         width: 90%;
     }
+    .info {
+        line-height: 20px !important;
+    }
 }
 
 .data {
     display: flex;
+    align-items: center;
     gap: 10px;
     height: max-content;
 }

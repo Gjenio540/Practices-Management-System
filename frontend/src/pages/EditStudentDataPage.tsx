@@ -86,8 +86,6 @@ const EditStudentDataPage = () => {
         return <Error message={error}/>    
 
     return(
-        
-        
         <div className={styles.content}>
             <div className={styles.container}></div>
                 <form className={styles.form} onSubmit={handleSubmit}>

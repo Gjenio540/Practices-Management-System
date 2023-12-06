@@ -4,6 +4,7 @@ import { host } from "../modules/env";
 import { areaData } from "../modules/interfaces";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
+import styles from "./sass/EditDataPage.module.scss"
 
 const AddStudentsPage = () => {
 
@@ -96,33 +97,36 @@ const AddStudentsPage = () => {
         
 
     return(
-    <>
-        <form onSubmit={handleSubmitFile}>
-            <h1>Dodaj studentów z pliku .csv</h1>
-            <input ref={fileRef} type="file" name="" id="" accept="text/csv"/>
-            <input className="button" type="submit" value="Wyślij plik" />
-        </form>
-        <form onSubmit={handleSubmit}>
-            <div className={""}>
-                <h1>Dane Studenta</h1>
-                    <label htmlFor="firstname">Imię</label>
-                    <input type="text" id="firstname" ref={firstnameRef} required/>
-                    <label htmlFor="lastname">Nazwisko</label>
-                    <input type="text" id="lastname" ref={lastnameRef}/>
-                    <label htmlFor="index">Numer indeksu</label>
-                    <input type="text" id="index" ref={indexRef}/>
-                    <label htmlFor="group">Grupa</label>
-                    <input type="text" id="group" ref={groupRef}/>
-                    <label htmlFor="area">Kierunek</label>
-                    <select name="" id="area" ref={areaRef}>
-                        {data?.map((area) => (
-                            <option value={area.id}>{area.areaName}</option>
-                        ))}
-                    </select>
-                    <input className="button" type="submit" value="Dodaj studenta" />
-                </div>
-        </form>
-    </>
+        <div className={styles.content}>
+            <div className={styles.container}>
+                <form className={styles.form} onSubmit={handleSubmitFile}>
+                    <h1>Dodaj studentów z pliku .csv</h1>
+                    <input ref={fileRef} type="file" accept="text/csv" required/>
+                    <input className="button bt-green" type="submit" value="Wyślij plik" />
+                </form>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <div className={styles.data}>
+                        <h1>Dane Studenta</h1>
+                            <label htmlFor="firstname">Imię</label>
+                            <input type="text" id="firstname" ref={firstnameRef} required/>
+                            <label htmlFor="lastname">Nazwisko</label>
+                            <input type="text" id="lastname" ref={lastnameRef}/>
+                            <label htmlFor="index">Numer indeksu</label>
+                            <input type="text" id="index" ref={indexRef}/>
+                            <label htmlFor="group">Grupa</label>
+                            <input type="text" id="group" ref={groupRef}/>
+                            <label htmlFor="area">Kierunek</label>
+                            <select name="" id="area" ref={areaRef}>
+                                {data?.map((area) => (
+                                    <option value={area.id}>{area.areaName}</option>
+                                ))}
+                            </select>
+                            <input className="button bt-green" type="submit" value="Dodaj studenta" />
+                        </div>
+                </form>
+            </div>
+        </div>
+    
     )
 }
 

@@ -1,7 +1,8 @@
 .student {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    justify-items: center;
+    display: flex;
+    //width: 90%;
+    //grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    justify-content: space-around;
     align-items: center;
     margin: 0 90px;
     font-size: 1.25rem;
@@ -11,4 +12,9 @@
     margin: 0 90px;
     border-radius: 7px;
     margin-top: 10px;
+}
+
+.options {
+    display: flex;
+    gap: 10px;
 }

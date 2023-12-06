@@ -17,3 +17,10 @@
         color: #adb6b8;
     }
 }
+
+
+@media only screen and (max-width: 600px) { 
+    .logoText {
+        display: none;
+    }
+}
