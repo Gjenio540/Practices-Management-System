@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom"
-import { getRole } from "../modules/auth"
+import { getRole, getUser } from "../modules/auth"
+
 
 const MainPage = () => {
     
     const navigate = useNavigate();
     useEffect(() => {
-        if (getRole() !== "supervisor") {
-           
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
             navigate("/praktyki/me")
         }
     }, [])

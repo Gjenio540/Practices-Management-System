@@ -5,6 +5,7 @@ import { host } from "../modules/env";
 import { areaData } from "../modules/interfaces";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
+import styles from "./sass/EditDataPage.module.scss"
 
 const EditStudentDataPage = () => {
     const propsData = useLocation().state;
@@ -19,7 +20,6 @@ const EditStudentDataPage = () => {
     const areaIdRef = useRef<HTMLSelectElement>(null);
     const specialityRef = useRef<HTMLInputElement>(null);
 
-    console.log(propsData.id)
     useEffect(() => {
         async function getData(): Promise<void> {
             try {
@@ -86,23 +86,39 @@ const EditStudentDataPage = () => {
         return <Error message={error}/>    
 
     return(
-        <>
-        <h1>edycja danych studenta</h1>
-        <form onSubmit={handleSubmit}>
-            <input type="text" defaultValue={propsData.firstname} ref={firstnameRef}/> <br /><br />
-            <input type="text" defaultValue={propsData.lastname} ref={lastnameRef}/> <br /><br />
-            <input type="text" defaultValue={propsData.indexNum} ref={indexNumRef}/> <br /><br />
-            <input type="text" defaultValue={propsData.studGroup} ref={groupRef}/> <br /><br />
-            <input type="text" defaultValue={propsData.specialty} ref={specialityRef}/> <br /><br />
-            <select name="" id="" ref={areaIdRef}>
-                {areaData?.map(area => (
-                    <option key={area.id} value={area.id}>{area.areaName}</option>
-                ))}
-            </select>
-            <button type="submit">Potwierdź</button>
-            <button type="button" onClick={() => navigate(-1)}>Anuluj</button>
-        </form>
-        </>
+        
+        
+        <div className={styles.content}>
+            <div className={styles.container}></div>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <div className={styles.flex}>
+                        <div className={styles.data}>
+                            <h1>edycja danych studenta</h1>
+                            <label htmlFor="firstname">imie</label>
+                            <input type="text" id="firstname" defaultValue={propsData.firstname} ref={firstnameRef}/>
+                            <label htmlFor="lastname">nazwisko</label>
+                            <input type="text" id="lastname" defaultValue={propsData.lastname} ref={lastnameRef}/>
+                            <label htmlFor="indexNum">numer indeksu</label>
+                            <input type="text" id="indexNum" defaultValue={propsData.indexNum} ref={indexNumRef}/>
+                            <label htmlFor="studGroup">grupa</label>
+                            <input type="text" id="studGroup" defaultValue={propsData.studGroup} ref={groupRef}/>
+                            <label htmlFor="specialty">specjalność</label>
+                            <input type="text" id="specialty" defaultValue={propsData.specialty} ref={specialityRef}/>
+                            <label htmlFor="area">kierunek</label>
+                            <select name="" id="area" ref={areaIdRef}>
+                                {areaData?.map(area => (
+                                    <option key={area.id} value={area.id}>{area.areaName}</option>
+                                ))}
+                            </select>
+                            <div className={styles.options}>
+                                <button type="submit" className="button bt-green">Potwierdź</button>
+                                <button type="button" className="button bt-red" onClick={() => navigate(-1)}>Anuluj</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            <div/>
+        </div>
     )
 }
 

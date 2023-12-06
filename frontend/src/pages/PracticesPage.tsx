@@ -24,7 +24,7 @@ const PracticesPage = () => {
             const data = await fetch(host+"/practices/preview", {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application-json',
+                        'Content-Type': 'application/json',
                         'Authorization': 'Bearer '+getToken()
                     }
                 }

@@ -67,3 +67,7 @@ export interface studentData {
     areaName: string
     specialty?: string
 }
+
+export interface logProps {
+    id?: string
+}

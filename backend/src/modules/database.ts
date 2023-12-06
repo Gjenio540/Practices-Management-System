@@ -96,7 +96,7 @@ export async function getAllPractices(id: number) {
 export async function getPractice(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>(`
-  SELECT students.firstname, students.lastname, students.studGroup, students.indexNum, practices.id as practiceId, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, practices.statusDate, areas.areaName, statuses.statusName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
+  SELECT students.firstname, students.lastname, students.studGroup, students.indexNum, practices.id as practiceId, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, practices.typeOfpractice, practices.nip, practices.regon, areas.areaName, statuses.statusName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
   FROM students
   INNER JOIN areas ON students.areaId = areas.id
   INNER JOIN practices ON students.id = practices.studentId
@@ -113,17 +113,17 @@ export async function getPractice(id: number) {
 
 export async function getLogs(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<RowDataPacket[]>('Select * FROM logs WHERE practiceId = id', [id]);
+  const result = await connection.query<RowDataPacket[]>('Select * FROM logs WHERE practiceId = ?', [id]);
   connection.end();
   if (Array.isArray(result[0]) && result[0].length > 0) {
-    return result[0][0];
+    return result[0];
   }
   return "notfound";
 }
 
 export async function insertLog(id: number, message: string, logDate: string) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket>('INSERT INTO logs (logMsg, practiceId, logDate)', [id]);
+  const result = await connection.query<OkPacket>('INSERT INTO logs (practiceId, logMsg, logDate) values (?, ?, ?)', [id, message, logDate]);
   connection.end();
   return result[0];
 }
@@ -152,9 +152,9 @@ export async function updatePassword(id: number, password: string) {
   return result[0];
 }
 
-export async function insertPractice(id: number, type: string, companyName: string, companyAdress: string, nip: string, regon: string, practiceStatus: number, semesterNumber: number, startDate: string, endDate: string) {
+export async function insertPractice(id: number, type: string, companyName: string, companyAdress: string, nip: string, regon: string, practiceStatus: number, semesterNumber: number, startDate: string, endDate: string, numOfHours: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket>('INSERT INTO practices (studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?););', [id, type, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate]);
+  const result = await connection.query<OkPacket>('INSERT INTO practices (studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [id, type, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours]);
   connection.end();
   return result[0];
 }

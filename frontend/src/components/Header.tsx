@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import uz_logo from '../assets/uz_logo.svg'
 import styles from './sass/Header.module.scss'
 
@@ -20,7 +20,7 @@ const Header = () => {
         <header className={styles.header}>
             <div className={styles.logo}>
                 <img src={uz_logo} alt="uz_logo" width={"96px"} height={"72px"}/>
-                <h1>System Zarządzania Praktykami</h1>
+                <Link to="/"><h1>System Zarządzania Praktykami</h1></Link>
             </div>
             <div></div>
             <button className="button bt-red" onClick={logOut}>Wyloguj</button>

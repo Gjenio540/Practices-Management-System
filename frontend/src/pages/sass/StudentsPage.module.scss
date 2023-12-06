@@ -1,11 +1,14 @@
 .student {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
     margin: 0 90px;
     font-size: 1.25rem;
-    &:nth-child(even) {
-        background-color: #525252;
-    }
+    background-color: #525252;
+    justify-items: center;
+    align-items: center;
+    margin: 0 90px;
+    border-radius: 7px;
+    margin-top: 10px;
 }

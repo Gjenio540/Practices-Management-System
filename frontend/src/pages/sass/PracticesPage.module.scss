@@ -1,47 +1,74 @@
-@media (prefers-color-scheme: dark) {
-    .left {
-      background-color: #525252;
-    }
+// @media (prefers-color-scheme: dark) {
+//     .left {
+//       background-color: #525252;
+//     }
 
-    .item {
-        background-color: #525252;;
-    }
+//     .item {
+//         background-color: #525252;;
+//     }
 
-    .items::-webkit-scrollbar {
-        width: 10px;
-    }
+//     .items::-webkit-scrollbar {
+//         width: 10px;
+//     }
     
-    .items::-webkit-scrollbar-track {
-        background: #525252;
-        border-radius: 10px;
+//     .items::-webkit-scrollbar-track {
+//         background: #525252;
+//         border-radius: 10px;
         
-    }
+//     }
     
-    .items::-webkit-scrollbar-thumb {
-        background: #a63636;
-        border-radius: 10px;
-    }
+//     .items::-webkit-scrollbar-thumb {
+//         background: #a63636;
+//         border-radius: 10px;
+//     }
 
-    #showButton {
-        background-color: #525252;
-    }
+//     #showButton {
+//         background-color: #525252;
+//     }
     
-}
+// }
 
-@media (prefers-color-scheme: light) {
-    .left {
-        background-color: #D7D7D7;
-    }
-    .item {
-        background-color: #D7D7D7;
-        color: #000;
-    }
+// @media (prefers-color-scheme: light) {
+//     .left {
+//         background-color: #D7D7D7;
+//     }
+//     .item {
+//         background-color: #D7D7D7;
+//         color: #000;
+//     }
 
-    #showButton {
-        background-color: #D7D7D7;
-        color: #000;
-    }
- }
+//     #showButton {
+//         background-color: #D7D7D7;
+//         color: #000;
+//     }
+//  }
+
+ .left {
+    background-color: #525252;
+  }
+
+  .item {
+      background-color: #525252;;
+  }
+
+  .items::-webkit-scrollbar {
+      width: 10px;
+  }
+  
+  .items::-webkit-scrollbar-track {
+      background: #525252;
+      border-radius: 10px;
+      
+  }
+  
+  .items::-webkit-scrollbar-thumb {
+      background: #a63636;
+      border-radius: 10px;
+  }
+
+  #showButton {
+      background-color: #525252;
+  }
 
 @media only screen and (max-width: 600px) {
 
@@ -112,7 +139,7 @@
     
     .items {
         overflow: auto;
-        height: calc(100vh - 200px);
+        height: calc(100vh - 210px);
     }
     
     .item {

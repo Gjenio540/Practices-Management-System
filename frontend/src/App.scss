@@ -2,19 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
 
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: $bg-dark;
-        color: #FFF
-    }
-}
+// @media (prefers-color-scheme: dark) {
+//     body {
+//         background-color: $bg-dark;
+//         color: #FFF;
+//     }
+// }
 
-@media (prefers-color-scheme: light) {
-    body {
-        background-color: $bg-light;
-        color: #000
-    }
-}
+// @media (prefers-color-scheme: light) {
+//     body {
+//         background-color: $bg-light;
+//         color: #000
+//     }
+// }
 
 a {
     text-decoration: none;
@@ -24,7 +24,9 @@ a {
 body {
     margin: 0;
     font-size: 16px;
-    color-scheme: light dark;
+    background-color: $bg-dark;
+    color: #FFF;
+    //color-scheme: dark;
     font-family: 'Lato';
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -141,6 +143,7 @@ select {
 input[type="text"], [type="number"],[type="date"],[type="password"] {
     //width: 75%;
     //height: 30px;
+    color: #FFF;
     font-family: 'Lato';
     border-radius: 3px;
     border-color: transparent;
@@ -156,3 +159,6 @@ input[type="text"], [type="number"],[type="date"],[type="password"] {
     }
 }
 
+select {
+    color: #FFF;
+}

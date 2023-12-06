@@ -3,7 +3,7 @@ import cors from 'cors';
 import jsonwebtoken from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 import * as db from './modules/database.js'
-import { logDate } from './modules/date.js'
+import { getCurrentDate, logDate } from './modules/date.js'
 import { transporter } from './modules/email.js'
 import { generatePassword, checkToken, parseJWTpayload, hashPassword, comparePassword } from './modules/auth.js'
 import type { jwtPayload } from './modules/auth.js'
@@ -230,17 +230,21 @@ app.post("/practices", checkToken, async (req: Request, res: Response) => {
         }
         const studentId = req.body.studentId as number;
         const companyName = req.body.companyName as string;
-        const companyAdress = req.body.companyAdress as string;
+        const companyAdress = req.body.companyAddress as string;
         const typeOfpractice =  req.body.typeOfpractice as string
         const nip = req.body.nip as string;
         const regon = req.body.regon as string;
-        //const practiceStatus = ?;
+        const practiceStatus = 1;
         const semesterNumber =  req.body.semesterNumber as number;
         const startDate = req.body.startDate as string;
-        const endDate = req.body.endDate as string
+        const endDate = req.body.endDate as string;
+        const numOfHours = req.body.numOfHours as number;
 
-        //const result = await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate);
-        //await db.insertLog(result.insertId);
+        console.log(numOfHours)
+
+        const result = await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours);
+        await db.insertLog(result.insertId, "Dodanie praktyki", getCurrentDate());
+        await db.insertLog(result.insertId, "Zmiana statusu na 'Nowa praktyka", getCurrentDate());
     }
     catch {
         res.sendStatus(500);
@@ -262,7 +266,7 @@ app.put("/practices/:id/status", checkToken, async (req: Request, res: Response)
     const gelearn = `${index}@g.elearn.uz.zgora.pl`;
     const zimbra = `${index}@poczta.stud.uz.zgora.pl`;
     await db.updateStatus(statusId, practiceId);
-    
+    await db.insertLog(practiceId, "Zmiana stususu na "+statusName, getCurrentDate());
 
     // await transporter.sendMail({
     //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
@@ -335,15 +339,15 @@ app.delete("/students/:id", checkToken, async (req: Request, res: Response) => {
 })
 
 //get logs
-app.get("/logs", checkToken, async (req: Request, res: Response) => {
+app.get("/logs/:id", checkToken, async (req: Request, res: Response) => {
     try {
         const payload = parseJWTpayload(req.body.token as string);
         if (payload.role !== "supervisor") {
             res.status(403);
             return;
         }
-        const logs = await db.getLogs(payload.id);
-        if (logs.length === 0) {
+        const logs = await db.getLogs(parseInt(req.params.id));
+        if (logs === "notfound") {
             res.sendStatus(404);
             return;
         }

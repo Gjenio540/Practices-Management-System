@@ -25,3 +25,17 @@
         width: 90%;
     }
 }
+
+.data {
+    display: flex;
+    gap: 10px;
+    height: max-content;
+}
+
+.faded {
+    color: #adb6b8;
+}
+
+.info {
+    line-height: 10px;
+}
