@@ -380,5 +380,18 @@ app.get("/areas", checkToken, async (req: Request, res: Response) => {
     }
 })
 
+app.get("/filterdata", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        const statuses = await db.getAllStatuses();
+        const areas = await db.getAreas(payload.id);
+        const data = {statuses, areas};
+        res.send(data).status(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
 
 app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));

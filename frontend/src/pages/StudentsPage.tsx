@@ -82,25 +82,25 @@ const StudentsPage = () => {
         )
 
     return(
-        <>
-        <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
-        <h1 className="centeredText">Lista studentów</h1>
-        {data?.map(students => (
-            <div className={styles.student} key={students.id}>
-                <p key={students.firstname}>{students.firstname}</p>
-                <p key={students.lastname}>{students.lastname}</p>
-                <p key={students.indexNum}>{students.indexNum}</p>
-                <p key={students.studGroup}>{students.studGroup}</p>
-                <p key={students.areaName}>{students.areaName}</p>
-                <p key={students.specialty}>{students.specialty}</p>
-                <div className={styles.options}>
-                    <Link to={"/studenci/dane"} className="button bt-blue" state={students}>Edytuj</Link>
-                    <Link to={"/studenci/praktyka"} className="button bt-blue" state={students}>Dodaj praktyke</Link>
-                    <button className="button bt-red" onClick={() => deleteStudent(students.id)}>Usuń</button>
+        <div className={styles.container}>
+            <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
+            <h1 className="centeredText">Lista studentów</h1>
+            {data?.map(students => (
+                <div className={styles.student} key={students.id}>
+                    <p key={students.firstname}>{students.firstname}</p>
+                    <p key={students.lastname}>{students.lastname}</p>
+                    <p key={students.indexNum}>{students.indexNum}</p>
+                    <p key={students.studGroup}>{students.studGroup}</p>
+                    <p key={students.areaName}>{students.areaName}</p>
+                    <p key={students.specialty}>{students.specialty}</p>
+                    <div className={styles.options}>
+                        <Link to={"/studenci/dane"} className="button bt-blue" state={students}>Edytuj</Link>
+                        <Link to={"/studenci/praktyka"} className="button bt-blue" state={students}>Dodaj praktyke</Link>
+                        <button className="button bt-red" onClick={() => deleteStudent(students.id)}>Usuń</button>
+                    </div>
                 </div>
-            </div>
-       ))}
-        </>
+        ))}
+       </div>
     )
 }
 

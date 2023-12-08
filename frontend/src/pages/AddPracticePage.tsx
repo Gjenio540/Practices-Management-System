@@ -75,8 +75,10 @@ const AddPracticePage = () => {
                             <input type="date" ref={endRef}/>
                             <label htmlFor="">Wymiar praktyki (godziny)</label>
                             <input type="number"  defaultValue={160} ref={hoursRef}/>
-                            <button className="button bt-green" type="submit">Dodaj praktyke</button>
-                            <button className="button bt-red" type="button" onClick={() => navigate(-1)}>Anuluj</button>
+                            <div className={styles.options}>
+                                <button className="button bt-green" type="submit">Dodaj praktyke</button>
+                                <button className="button bt-red" type="button" onClick={() => navigate(-1)}>Anuluj</button>
+                            </div>
                         </div>  
                     </div>   
                 </form>

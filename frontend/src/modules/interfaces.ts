@@ -71,3 +71,8 @@ export interface studentData {
 export interface logProps {
     id?: string
 }
+
+export interface filterData {
+    areas: areaData[],
+    statuses: statusData[]
+}

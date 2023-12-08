@@ -194,5 +194,3 @@ export async function deleteStudent(id: number) {
   return result[0];
 }
 
- 
-

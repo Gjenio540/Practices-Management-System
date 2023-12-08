@@ -121,7 +121,9 @@ const AddStudentsPage = () => {
                                     <option value={area.id}>{area.areaName}</option>
                                 ))}
                             </select>
-                            <input className="button bt-green" type="submit" value="Dodaj studenta" />
+                            <div className={styles.options}>
+                                <input className="button bt-green" type="submit" value="Dodaj studenta" />
+                            </div>
                         </div>
                 </form>
             </div>

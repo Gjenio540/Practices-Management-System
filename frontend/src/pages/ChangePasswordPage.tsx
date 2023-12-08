@@ -41,18 +41,20 @@ const ChangePasswordPage = () => {
         return <Error message={error}/>
 
     return(
-        <form className={styles.form} onSubmit={handleSubmit}>
-            <h1>Zmiana hasła</h1>
-            {warning && <h2 className="warning">{warning}</h2>}
-            <label htmlFor="pass1">Podaj hasło</label>
-            <input type="password" ref={passwordRef} id="pass1" />
-            <label htmlFor="pass2">Potwierdź hasło</label>
-            <input type="password" ref={controllRef} id="pass2" />
-            <div className={styles.options}>
-                <button type="submit" className="button bt-green">Potwierdź</button>
-                <button type="button" className="button bt-red" onClick={() => navigate(-1)}>Anuluj</button>
-            </div>
-        </form>
+        <div className={styles.container}>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <h1>Zmiana hasła</h1>
+                {warning && <h2 className="warning">{warning}</h2>}
+                <label htmlFor="pass1">Podaj hasło</label>
+                <input type="password" ref={passwordRef} id="pass1" />
+                <label htmlFor="pass2">Potwierdź hasło</label>
+                <input type="password" ref={controllRef} id="pass2" />
+                <div className={styles.options}>
+                    <button type="submit" className="button bt-green">Potwierdź</button>
+                    <button type="button" className="button bt-red" onClick={() => navigate(-1)}>Anuluj</button>
+                </div>
+            </form>
+        </div>
     )
 }
 
