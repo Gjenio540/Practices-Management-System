@@ -45,7 +45,23 @@
 
  .left {
     background-color: #525252;
+    overflow: overlay
   }
+
+.left::-webkit-scrollbar {
+    width: 10px;
+}
+
+.left::-webkit-scrollbar-track {
+    background: #525252;
+    border-radius: 10px;
+    
+}
+
+.left::-webkit-scrollbar-thumb {
+    background: #a63636;
+    border-radius: 10px;
+}
 
   .item {
       background-color: #525252;;
@@ -138,7 +154,7 @@
     }
     
     .items {
-        overflow: auto;
+        overflow: overlay;
         height: calc(100vh - 210px);
     }
     

@@ -3,9 +3,10 @@ import { FormEvent, useRef } from "react"
 import { host } from "../modules/env"
 import { getToken } from "../modules/auth"
 import styles from "./sass/EditDataPage.module.scss"
+import { practiceData, statusData, studentData } from "../modules/interfaces"
 
 const EditPracticeData = () => {
-    const propsData = useLocation().state;
+    const propsData: practiceData = useLocation().state;
     const navigate = useNavigate();
     
     const companyNameRef = useRef<HTMLInputElement>(null);
@@ -50,10 +51,8 @@ const EditPracticeData = () => {
         }
     }
 
-    let rawDate = new Date(propsData.startDate);
-    const startDate = rawDate.toISOString().split('T')[0];
-    rawDate = new Date(propsData.endDate);
-    const endDate = rawDate.toISOString().split('T')[0];
+    const startDate = new Date(propsData.startDate).toLocaleDateString("sv")
+    const endDate = new Date(propsData.endDate).toLocaleDateString("sv")
 
     return (
         <div className={styles.content}>

@@ -67,6 +67,16 @@ const AddStudentsPage = () => {
                 },
                 body: JSON.stringify(body)
             })
+
+            if(response.ok) {
+                setError("Doddano studentów");
+                setInterval(() => setError(""), 1500);
+            }
+
+            else if(!response.ok) {
+                setError(response.status+response.statusText);
+                setInterval(() => setError(""), 1500);
+            }
         }
     }
 
@@ -106,7 +116,7 @@ const AddStudentsPage = () => {
                 </form>
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <div className={styles.data}>
-                        <h1>Dane Studenta</h1>
+                        <h1>Dodaj studenta z formularza</h1>
                             <label htmlFor="firstname">Imię</label>
                             <input type="text" id="firstname" ref={firstnameRef} required/>
                             <label htmlFor="lastname">Nazwisko</label>

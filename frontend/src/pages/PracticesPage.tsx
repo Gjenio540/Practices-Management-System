@@ -5,7 +5,7 @@ import Error from "../components/Error"
 import { host } from "../modules/env"
 import { getToken } from "../modules/auth"
 import styles from "./sass/PracticesPage.module.scss"
-import { filterData, previewData } from "../modules/interfaces"
+import { filterData, previewData, statusData } from "../modules/interfaces"
 
 const PracticesPage = () => {
     
@@ -15,7 +15,7 @@ const PracticesPage = () => {
     const [filterData, setFilterData] = useState<filterData>();
 
     //sorting and filtering
-    const [area, setArea] = useState<string | null>();
+    const [area, setArea] = useState<string | null>(null);
     const [group, setGroup] = useState<string>("");
     const [status, setStatus] = useState<string[]>([]);
     const [sort, setSort] = useState<string>("name");
@@ -55,10 +55,6 @@ const PracticesPage = () => {
         getFilterData();
     }, [])
 
-
-    const [test, setTest] = useState<number>(0);
-    useEffect(() => {console.log(status); console.log(test)}, [status]);
-
     function showFilters(e: React.MouseEvent<HTMLButtonElement>): void {
         let left = document.getElementById("left");
         let button = e.currentTarget;
@@ -73,7 +69,6 @@ const PracticesPage = () => {
             }
         }
     }
-
 
     function setArrayOfStatues(e: React.ChangeEvent<HTMLInputElement>): void {
         if(e.currentTarget.checked) {

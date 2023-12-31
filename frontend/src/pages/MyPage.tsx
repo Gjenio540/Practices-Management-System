@@ -44,26 +44,60 @@ const MyPage = () => {
     if(loading)
         return(<Loading/>);
     if(error)
-        return(<Error message={"Error"}/>)    
+        return(<Error message={"Error"}/>)
 
-    return(
-        <div className={styles.content}>
-            <div className={styles.container}>
-                <div className={styles.info}>
-                    <h1>{data?.firstname+" "+data?.lastname}</h1>
-                    <h2>{"Grupa: "+data?.studGroup}</h2>
-                    <h2>{"Kierunek: "+data?.areaName}</h2>
-                    <h2>{"Rodzaj praktyki: "+data?.typeOfpractice}</h2>
-                    <h2>{"Nazwa firmy: "+data?.companyName}</h2>
-                    <h2>{"Adres firmy: "+data?.companyAdress}</h2>
-                    <h2>{"Data rozpoczęcia praktyki: "+data?.startDate}</h2>
-                    <h2>{"Data zakończenia praktyki: "+data?.endDate}</h2>
-                    <h2>{"Wymiar praktyki: "+data?.numOfHours+" godzin"}</h2>
-                    <h2>{"Status praktyki: "+data?.statusName}</h2>
-                </div>
-            </div>
-        </div>
-    );
+    if(data) {
+        let rawDate = new Date(data.startDate);
+        const startDate = rawDate.toLocaleDateString('pl-PL');
+        rawDate = new Date(data.endDate);
+        const endDate = rawDate.toLocaleDateString('pl-PL');
+
+            return(
+                <div className={styles.content}>
+                    <div className={styles.container}>
+                        <div className={styles.info}>
+                            <h1>{data?.firstname+" "+data?.lastname}</h1>
+                            <div className={styles.data}>
+                                    <h2 className={styles.faded}>Grupa:</h2>
+                                    <h2>{data?.studGroup}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Kierunek:</h2>
+                                <h2>{data?.areaName}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Rodzaj praktyki:</h2>
+                                <h2>{data?.typeOfpractice}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Nazwa firmy:</h2>
+                                <h2>{data?.companyName}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Adres firmy:</h2>
+                                <h2>{data?.companyAdress}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Data rozpoczęcia praktyki:</h2>
+                                <h2>{startDate}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Data zakończenia praktyki:</h2>
+                                <h2>{endDate}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Wymiar praktyki:</h2>
+                                <h2>{data?.numOfHours+" godzin"}</h2>
+                            </div>
+                            <div className={styles.data}>
+                                <h2 className={styles.faded}>Status praktyki:</h2>
+                                <h2>{data?.statusName}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>     
+        );
+    }
 }
 
 export default MyPage

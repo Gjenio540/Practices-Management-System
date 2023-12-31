@@ -13,6 +13,7 @@ import EditPracticeDataPage from './pages/EditPracticeDataPage';
 import EditStatusPage from './pages/EditStatusPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import AddPracticePage from './pages/AddPracticePage';
+import LogsPage from './pages/LogsPage';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path={"/praktyki/dane"} element={<EditPracticeDataPage/>}/>
         <Route path={"/praktyki/status"} element={<EditStatusPage/>}/>
         <Route path={"/password"} element={<ChangePasswordPage/>}/>
+        <Route path={"/praktyki/logi"} element={<LogsPage/>}/>
       </Routes>
     </BrowserRouter>
   );

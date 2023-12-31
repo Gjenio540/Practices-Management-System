@@ -61,7 +61,7 @@ export async function getSupervisor(id: number) {
 export async function getMyPractice(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>(`
-  SELECT students.firstname, students.lastname, students.studGroup, students.indexNum, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, areas.areaName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
+  SELECT students.id as studentId, students.firstname, students.lastname, students.studGroup, students.indexNum, practices.id as practiceId, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, practices.typeOfpractice, practices.nip, practices.regon, areas.areaName, statuses.statusName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
   FROM students
   INNER JOIN areas ON students.areaId = areas.id
   INNER JOIN practices ON students.id = practices.studentId
@@ -79,7 +79,7 @@ export async function getMyPractice(id: number) {
 export async function getAllPractices(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>(`
-    SELECT students.firstname, students.lastname, students.indexNum, students.studGroup, areas.areaName, statuses.statusName, practices.id FROM students
+    SELECT students.id, students.firstname, students.lastname, students.indexNum, students.studGroup, areas.areaName, statuses.statusName, practices.id FROM students
     INNER JOIN areas ON students.areaId = areas.id
     INNER JOIN practices ON students.id = practices.studentId
     INNER JOIN statuses ON practices.practiceStatus = statuses.id
@@ -96,7 +96,7 @@ export async function getAllPractices(id: number) {
 export async function getPractice(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>(`
-  SELECT students.firstname, students.lastname, students.studGroup, students.indexNum, practices.id as practiceId, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, practices.typeOfpractice, practices.nip, practices.regon, areas.areaName, statuses.statusName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
+  SELECT students.id as studentId, students.firstname, students.lastname, students.studGroup, students.indexNum, practices.id as practiceId, practices.companyName, practices.companyAdress, practices.practiceStatus, practices.semesterNumber, practices.startDate, practices.endDate, practices.numOfHours, practices.typeOfpractice, practices.nip, practices.regon, areas.areaName, statuses.statusName, supervisors.firstname as supervisorName, supervisors.lastname as supervisorsLastname
   FROM students
   INNER JOIN areas ON students.areaId = areas.id
   INNER JOIN practices ON students.id = practices.studentId
@@ -113,7 +113,7 @@ export async function getPractice(id: number) {
 
 export async function getLogs(id: number) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<RowDataPacket[]>('Select * FROM logs WHERE practiceId = ?', [id]);
+  const result = await connection.query<RowDataPacket[]>('Select * FROM logs WHERE studentId = ?', [id]);
   connection.end();
   if (Array.isArray(result[0]) && result[0].length > 0) {
     return result[0];
@@ -123,7 +123,7 @@ export async function getLogs(id: number) {
 
 export async function insertLog(id: number, message: string, logDate: string) {
   const connection = mysql2.createConnection(credentials).promise();
-  const result = await connection.query<OkPacket>('INSERT INTO logs (practiceId, logMsg, logDate) values (?, ?, ?)', [id, message, logDate]);
+  const result = await connection.query<OkPacket>('INSERT INTO logs (studentId, logMsg, logDate) values (?, ?, ?)', [id, message, logDate]);
   connection.end();
   return result[0];
 }

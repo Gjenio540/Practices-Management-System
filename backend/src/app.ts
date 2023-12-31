@@ -3,7 +3,7 @@ import cors from 'cors';
 import jsonwebtoken from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 import * as db from './modules/database.js'
-import { getCurrentDate, logDate } from './modules/date.js'
+import { getCurrentDate, getDateString, logDate } from './modules/date.js'
 import { transporter } from './modules/email.js'
 import { generatePassword, checkToken, parseJWTpayload, hashPassword, comparePassword } from './modules/auth.js'
 import type { jwtPayload } from './modules/auth.js'
@@ -41,16 +41,16 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         await db.insertStudent(firstname, lastname, index, areaId, group, userId);
 
         //---Send Mail----
-        await transporter.sendMail({
-            from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
-            to: `${zimbra}, ${gelearn}`, // list of receivers
-            subject: "Konto", // Subject line
-            html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
-                    Twoje dane logowania to: <br>
-                    login: ${index} <br>
-                    hasło: ${password}
-                    `, // html body
-        });
+        // await transporter.sendMail({
+        //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+        //     to: `${zimbra}, ${gelearn}`, // list of receivers
+        //     subject: "Konto", // Subject line
+        //     html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+        //             Twoje dane logowania to: <br>
+        //             login: ${index} <br>
+        //             hasło: ${password}
+        //             `, // html body
+        // });
         res.sendStatus(201);
     }
     catch {
@@ -79,7 +79,6 @@ app.post("/auth/register/student/file", checkToken, async (req: Request, res: Re
             const lastname = student.lastname as string;
             const index = student.indexNum as string;
             const areaString = student.area as string;
-            console.log(areaString);
             const group = student.studGroup as string;
             const password = generatePassword();
             const gelearn = `${index}@g.elearn.uz.zgora.pl`;
@@ -240,11 +239,9 @@ app.post("/practices", checkToken, async (req: Request, res: Response) => {
         const endDate = req.body.endDate as string;
         const numOfHours = req.body.numOfHours as number;
 
-        console.log(numOfHours)
-
-        const result = await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours);
-        await db.insertLog(result.insertId, "Dodanie praktyki", getCurrentDate());
-        await db.insertLog(result.insertId, "Zmiana statusu na 'Nowa praktyka", getCurrentDate());
+        await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours);
+        await db.insertLog(studentId, "Dodanie praktyki", getCurrentDate());
+        await db.insertLog(studentId, "Zmiana statusu na Nowa praktyka", getCurrentDate());
     }
     catch {
         res.sendStatus(500);
@@ -394,4 +391,4 @@ app.get("/filterdata", checkToken, async (req: Request, res: Response) => {
 })
 
 
-app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));
+app.listen(port, () => console.log(getDateString() + " Serwer uruchomiony na porcie " + port));

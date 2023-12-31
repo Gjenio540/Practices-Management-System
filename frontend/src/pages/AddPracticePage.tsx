@@ -1,10 +1,12 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"
 import { getToken } from "../modules/auth";
 import { host } from "../modules/env";
+import Error from "../components/Error";
 import styles from "./sass/EditDataPage.module.scss"
 
 const AddPracticePage = () => {
+    const [error, setError] = useState<string>("")
     const data = useLocation().state;
     const navigate = useNavigate();
 
@@ -47,8 +49,16 @@ const AddPracticePage = () => {
                         "numOfHours": hoursRef.current?.value
                     })
             })
+
+            if(result.ok) {
+                setError("Dodano praktyke");
+                setInterval(() => setError(""), 1500);
+            }
         }
     }
+
+    if(error)
+        return(<Error message={error}/>)
 
     return(
         <div className={styles.content}>

@@ -20,6 +20,8 @@ export interface previewData {
 }
 
 export interface practiceData {
+    id: number
+    studentId: number
     firstname: string
     lastname: string
     studGroup: string
@@ -69,7 +71,7 @@ export interface studentData {
 }
 
 export interface logProps {
-    id?: string
+    id?: number
 }
 
 export interface filterData {

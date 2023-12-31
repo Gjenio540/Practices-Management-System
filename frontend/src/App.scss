@@ -137,7 +137,7 @@ select {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 90vh;
+        height: 80vh;
         align-items: center;
         justify-content: center;
     }
@@ -160,5 +160,27 @@ input[type="text"], [type="number"],[type="date"],[type="password"] {
     &:focus {
         box-shadow: inset;
         outline: none;
+    }
+}
+
+.flex {
+    display: flex;
+    gap: 20px;
+}
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #525252;
+    width: 128px;
+    height: 128px;
+    border-radius: 15px;
+    font-size: 1.25rem;
+    transition: 0.3s;
+
+    &:hover {
+        background-color: #3f3b88;
+        transition: 0.3s;
     }
 }

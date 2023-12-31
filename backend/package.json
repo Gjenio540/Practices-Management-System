@@ -5,31 +5,37 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "build": "npx tsc && copy .env build",
+    "build": "esbuild src/app.ts --bundle --platform=node --minify --outfile=build/app.js --packages=external && copyfiles .env build && echo copying files... && copyfiles -u 1 node_modules/**/* build/node_modules",
     "dev": "nodemon src/app.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Paweł Spisz",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1528.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "mock-aws-s3": "^4.0.2",
     "mysql2": "^3.2.4",
+    "nock": "^13.4.0",
     "nodemailer": "^6.9.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@craftamap/esbuild-plugin-html": "^0.6.1",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^18.16.1",
     "@types/nodemailer": "^6.4.7",
+    "copyfiles": "^2.4.1",
+    "esbuild": "0.19.11",
     "nodemon": "^2.0.22"
   }
 }

@@ -70,10 +70,10 @@ CREATE TABLE practices (
 
 CREATE TABLE logs (
     id int NOT NULL AUTO_INCREMENT,
-    practiceId int NOT NULL,
+    studentId int NOT NULL,
     logDate date NOT NULL,
     logMsg VARCHAR(100) NOT NULL,
     UNIQUE(id),
     PRIMARY KEY (id),
-    FOREIGN KEY (practiceId) REFERENCES practices(id)
+    FOREIGN KEY (studentId) REFERENCES students(id)
 );

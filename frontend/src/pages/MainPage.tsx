@@ -16,11 +16,12 @@ const MainPage = () => {
     }, [])
 
     return(
-        <>
-        <h1>Main Page 🖥️</h1>
-        <Link to={"/praktyki"}>Praktyki</Link><br /><br />
-        <Link to={"/studenci"}>Studenci</Link>
-        </>
+        <div className="container">
+            <div className="flex">
+                <Link className="tile" to={"/studenci"}>Studenci</Link>
+                <Link className="tile" to={"/praktyki"}>Praktyki</Link>
+            </div>
+        </div>
     )
 }
 

@@ -102,10 +102,10 @@ const DatailsPage = () => {
                     <div className={styles.options}>
                         <Link className="button bt-blue" to={"/praktyki/dane"} state={data}>Edytuj dane</Link>
                         <Link className="button bt-blue" to={"/praktyki/status"} state={data}>Zmień status</Link>
+                        <Link className="button bt-blue" to={"/praktyki/logi"} state={data}>Zobacz logi</Link>
                         <Link className="button bt-red" to={"/praktyki"}>Powrót</Link>
                     </div>
                 </div>
-                <Logs id={id} />
             </div>
         );
     }

@@ -10,25 +10,26 @@ const Logs = (props: logProps) => {
 
     useEffect(() => {
         async function getLogs() {
-            if(props.id)
-            {
-                const response = await fetch(host+"/logs/"+props.id, {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`
-                    },
-                })
-                if(response.status === 404) {
+                if(props.id)
+                {
+                    const response = await fetch(host+"/logs/"+props.id, {
+                        method: "GET",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                    })
+                    if(response.status === 404) {
+                        setLoading(false);
+                        setError(true);
+                        return
+                    }
+                    const json = await response.json();
+                    setData(json);
                     setLoading(false);
-                    setError(true);
-                    return
-                }
-                const json = await response.json();
-                setData(json);
-                setLoading(false);
             }
-            }
+            
+        }
         getLogs();
     }, [])
 
