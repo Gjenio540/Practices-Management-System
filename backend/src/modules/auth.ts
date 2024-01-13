@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jsonwebtoken from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET as unknown as string;
@@ -12,17 +12,7 @@ export type jwtPayload = {
 }
 
 export function generatePassword(): string {
-  let string = Math.random().toString(36).slice(2);
-  let splitted = string.split('');
-  let upper: string[] = [];
-  splitted.forEach(char => {
-    if(Math.random() < 0.4)
-      upper.push(char.toUpperCase());
-    else
-        upper.push(char);
-  })
-  let password = upper.join('');
-  return password;
+  return Buffer.from(Math.random().toString()).toString("base64").substring(10,21);
 }
 
 export function checkToken(req: Request, res: Response, next: NextFunction): void {

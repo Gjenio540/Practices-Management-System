@@ -1,9 +1,9 @@
 import {useState, useEffect } from "react"
 import { logData, practiceData } from "../modules/interfaces"
 import { host } from "../modules/env";
-import { getToken } from "../modules/auth";
+import { getToken, getUser, getRole } from "../modules/auth";
 import Loading from "../components/Loading";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./sass/EditDataPage.module.scss";
 
 const LogsPage = () => {
@@ -11,6 +11,16 @@ const LogsPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const state: practiceData = useLocation().state
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getLogs() {
@@ -27,22 +37,19 @@ const LogsPage = () => {
                     })
                     if(response.status === 404) {
                         setLoading(false);
-                        setError("4004");
-                        console.log(data)
+                        setError("404");
                         return
                     }
                     if(response.ok)
                     {
                         setData (await response.json());
                         setLoading(false);
-                        console.log(data)
                         return
                     }
                     if(!response.ok)
                     {
                         setLoading(false);
                         setError(response.statusText)
-                        console.log(data)
                         return
                     }
             }

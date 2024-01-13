@@ -30,7 +30,7 @@ export interface practiceData {
     practiceId: number
     typeOfpractice: string
     companyName: string
-    companyAdress: string
+    companyAddress: string
     nip: string
     regon: string
     statusNumber: number

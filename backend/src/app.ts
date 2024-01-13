@@ -242,6 +242,35 @@ app.post("/practices", checkToken, async (req: Request, res: Response) => {
         await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours);
         await db.insertLog(studentId, "Dodanie praktyki", getCurrentDate());
         await db.insertLog(studentId, "Zmiana statusu na Nowa praktyka", getCurrentDate());
+        res.sendStatus(200);
+    }
+    catch {
+        res.sendStatus(500);
+    }
+})
+
+app.put("/practices/:id", checkToken, async (req: Request, res: Response) => {
+    try {
+        const payload = parseJWTpayload(req.body.token as string);
+        if (payload.role !== "supervisor") {
+            res.sendStatus(403);
+            return;
+        }
+        const studentId = req.body.studentId as number;
+        const companyName = req.body.companyName as string;
+        const companyAddress = req.body.companyAddress as string;
+        const nip = req.body.nip as string;
+        const regon = req.body.regon as string;
+        const typeOfpractice = req.body.typeOfpractice as string;
+        const semesterNumber = req.body.semesterNumber as number;
+        const startDate = req.body.startDate as string;
+        const endDate = req.body.endDate as string;
+        const numOfHours = req.body.numOfHours as number
+    
+        await db.updatePractice(parseInt(req.params.id), companyName, companyAddress, nip, regon, typeOfpractice, semesterNumber, startDate, endDate, numOfHours);
+        await db.insertLog(studentId, "aktualizacja danych praktyki", getCurrentDate());
+        res.sendStatus(200)
+ 
     }
     catch {
         res.sendStatus(500);
@@ -391,4 +420,4 @@ app.get("/filterdata", checkToken, async (req: Request, res: Response) => {
 })
 
 
-app.listen(port, () => console.log(getDateString() + " Serwer uruchomiony na porcie " + port));
+app.listen(port, () => console.log(logDate() + " Serwer uruchomiony na porcie " + port));

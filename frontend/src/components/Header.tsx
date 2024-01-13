@@ -23,7 +23,10 @@ const Header = () => {
                 <h1 className={styles.logoText}>System Zarządzania Praktykami</h1>
             </Link>
             <div></div>
-            <button className="button bt-red" onClick={logOut}>Wyloguj</button>
+            <div  className={styles.logo}>
+                <Link to="/password">zmień hasło</Link>
+                <button className="button bt-red" onClick={logOut}>Wyloguj</button>
+            </div>
         </header>
     );
 }

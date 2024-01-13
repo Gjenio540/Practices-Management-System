@@ -1,16 +1,28 @@
 import { FormEvent, useState, useEffect, useRef } from "react"
-import { getToken } from "../modules/auth";
+import { getToken, getUser, getRole } from "../modules/auth";
 import { host } from "../modules/env";
 import { areaData } from "../modules/interfaces";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
 import styles from "./sass/EditDataPage.module.scss"
+import { useNavigate } from "react-router-dom";
 
 const AddStudentsPage = () => {
 
     const [data, setData] = useState<areaData[]>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
+    
     const fileRef = useRef<HTMLInputElement>(null);
     const firstnameRef = useRef<HTMLInputElement>(null);
     const lastnameRef = useRef<HTMLInputElement>(null);
@@ -69,7 +81,7 @@ const AddStudentsPage = () => {
             })
 
             if(response.ok) {
-                setError("Doddano studentów");
+                setError("Dodano studentów");
                 setInterval(() => setError(""), 1500);
             }
 
@@ -82,21 +94,30 @@ const AddStudentsPage = () => {
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
-        const body = {
-            "firstname": firstnameRef.current?.value,
-            "lastname": lastnameRef.current?.value,
-            "index": indexRef.current?.value,
-            "group": groupRef.current?.value,
-            "areaId": areaRef.current?.value
-        };
+
         const response = await fetch(host+"/auth/register/student",{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getToken()}`
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify({
+                "firstname": firstnameRef.current?.value,
+                "lastname": lastnameRef.current?.value,
+                "index": indexRef.current?.value,
+                "group": groupRef.current?.value,
+                "areaId": areaRef.current?.value
+                }
+            )
         });
+
+        if(!response.ok) {
+            setError("Wystąpił błąd");
+            setTimeout(() => setError(""), 1500);
+            return;
+        }
+        setError("Dodano studenta");
+        setTimeout(() => setError(""), 1500);
     }
 
     if(loading)

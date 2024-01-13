@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom"
-import { getToken } from "../modules/auth";
+import { getToken, getUser, getRole } from "../modules/auth";
 import { host } from "../modules/env";
 import { areaData } from "../modules/interfaces";
 import Loading from "../components/Loading";
@@ -19,6 +19,15 @@ const EditStudentDataPage = () => {
     const groupRef = useRef<HTMLInputElement>(null);
     const areaIdRef = useRef<HTMLSelectElement>(null);
     const specialityRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getData(): Promise<void> {

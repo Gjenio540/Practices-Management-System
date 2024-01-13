@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { host } from "../modules/env";
-import { getToken } from "../modules/auth";
+import { getToken, getUser, getRole } from "../modules/auth";
 import { statusData } from "../modules/interfaces";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -14,6 +14,15 @@ const EditStatus = () => {
     const statusRef = useRef<HTMLSelectElement>(null);
     const { state } = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getStatusData(): Promise<void> {

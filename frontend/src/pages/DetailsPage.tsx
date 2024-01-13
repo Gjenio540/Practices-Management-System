@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getToken } from '../modules/auth';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getToken, getUser, getRole } from '../modules/auth';
 import { host } from '../modules/env';
 import styles from '../pages/sass/DetailPage.module.scss'
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import { practiceData } from '../modules/interfaces';
-import Logs from '../components/Logs';
 
 const DatailsPage = () => {
 
@@ -14,6 +13,16 @@ const DatailsPage = () => {
     const [data, setData] = useState<practiceData>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getData(): Promise<void> {
@@ -52,6 +61,7 @@ const DatailsPage = () => {
 
     if(data)
     {
+        console.log(data)
         let rawDate = new Date(data.startDate);
         const startDate = rawDate.toLocaleDateString('pl-PL');
         rawDate = new Date(data.endDate);
@@ -80,7 +90,15 @@ const DatailsPage = () => {
                         </div>
                         <div className={styles.data}>
                             <h2 className={styles.faded}>Adres firmy:</h2>
-                            <h2>{data?.companyAdress}</h2>
+                            <h2>{data?.companyAddress}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>NIP:</h2>
+                            <h2>{data?.nip}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>REGON:</h2>
+                            <h2>{data?.regon}</h2>
                         </div>
                         <div className={styles.data}>
                             <h2 className={styles.faded}>Data rozpoczęcia praktyki:</h2>
@@ -109,6 +127,8 @@ const DatailsPage = () => {
             </div>
         );
     }
+
+    return(<></>)
 }
 
 export default DatailsPage

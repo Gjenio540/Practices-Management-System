@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getToken } from "../modules/auth";
+import { getToken, getUser, getRole } from "../modules/auth";
+import { useNavigate } from "react-router-dom";
 import { host } from '../modules/env';
 import Loading from "../components/Loading";
 import Error from "../components/Error";
@@ -11,6 +12,16 @@ const MyPage = () => {
     const [data, setData] = useState<practiceData>();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie");
+        }
+        else if (getRole() !== "student") {
+            navigate("/");
+        }
+    }, [])
 
     useEffect(() => {
         async function getStudentData(): Promise<void> {
@@ -52,52 +63,63 @@ const MyPage = () => {
         rawDate = new Date(data.endDate);
         const endDate = rawDate.toLocaleDateString('pl-PL');
 
-            return(
-                <div className={styles.content}>
-                    <div className={styles.container}>
-                        <div className={styles.info}>
-                            <h1>{data?.firstname+" "+data?.lastname}</h1>
-                            <div className={styles.data}>
-                                    <h2 className={styles.faded}>Grupa:</h2>
-                                    <h2>{data?.studGroup}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Kierunek:</h2>
-                                <h2>{data?.areaName}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Rodzaj praktyki:</h2>
-                                <h2>{data?.typeOfpractice}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Nazwa firmy:</h2>
-                                <h2>{data?.companyName}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Adres firmy:</h2>
-                                <h2>{data?.companyAdress}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Data rozpoczęcia praktyki:</h2>
-                                <h2>{startDate}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Data zakończenia praktyki:</h2>
-                                <h2>{endDate}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Wymiar praktyki:</h2>
-                                <h2>{data?.numOfHours+" godzin"}</h2>
-                            </div>
-                            <div className={styles.data}>
-                                <h2 className={styles.faded}>Status praktyki:</h2>
-                                <h2>{data?.statusName}</h2>
-                            </div>
+        return(
+            <div className={styles.content}>
+                <div className={styles.container}>
+                    <div className={styles.info}>
+                        <h1>{data?.firstname+" "+data?.lastname}</h1>
+                        <div className={styles.data}>
+                                <h2 className={styles.faded}>Grupa:</h2>
+                                <h2>{data?.studGroup}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Kierunek:</h2>
+                            <h2>{data?.areaName}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Rodzaj praktyki:</h2>
+                            <h2>{data?.typeOfpractice}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Nazwa firmy:</h2>
+                            <h2>{data?.companyName}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Adres firmy:</h2>
+                            <h2>{data?.companyAddress}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>NIP:</h2>
+                            <h2>{data?.nip}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>REGON:</h2>
+                            <h2>{data?.regon}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Data rozpoczęcia praktyki:</h2>
+                            <h2>{startDate}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Data zakończenia praktyki:</h2>
+                            <h2>{endDate}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Wymiar praktyki:</h2>
+                            <h2>{data?.numOfHours+" godzin"}</h2>
+                        </div>
+                        <div className={styles.data}>
+                            <h2 className={styles.faded}>Status praktyki:</h2>
+                            <h2>{data?.statusName}</h2>
                         </div>
                     </div>
-                </div>     
+                </div>
+            </div>     
         );
     }
+
+    return(<></>)
+    
 }
 
 export default MyPage

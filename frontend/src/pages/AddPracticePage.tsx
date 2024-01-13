@@ -1,6 +1,6 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"
-import { getToken } from "../modules/auth";
+import { getToken, getRole, getUser } from "../modules/auth";
 import { host } from "../modules/env";
 import Error from "../components/Error";
 import styles from "./sass/EditDataPage.module.scss"
@@ -9,6 +9,15 @@ const AddPracticePage = () => {
     const [error, setError] = useState<string>("")
     const data = useLocation().state;
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     const companyNameRef = useRef<HTMLInputElement>(null);
     const companyAddressRef = useRef<HTMLInputElement>(null);

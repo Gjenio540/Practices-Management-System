@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Loading from "../components/Loading"
 import Error from "../components/Error"
 import { host } from "../modules/env"
-import { getToken } from "../modules/auth"
+import { getToken, getUser, getRole } from "../modules/auth"
 import styles from "./sass/PracticesPage.module.scss"
-import { filterData, previewData, statusData } from "../modules/interfaces"
+import { filterData, previewData } from "../modules/interfaces"
 
 const PracticesPage = () => {
     
@@ -13,12 +13,21 @@ const PracticesPage = () => {
     const [error, setError] = useState<string>("");
     const [data, setData] = useState<previewData[]>([]);
     const [filterData, setFilterData] = useState<filterData>();
+    const navigate = useNavigate();
 
     //sorting and filtering
     const [area, setArea] = useState<string | null>(null);
-    const [group, setGroup] = useState<string>("");
     const [status, setStatus] = useState<string[]>([]);
     const [sort, setSort] = useState<string>("name");
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getPracticesData(): Promise<void> {
@@ -109,9 +118,6 @@ const PracticesPage = () => {
                     ))}
                 </div>
                 <div className={styles.options}>
-                    <h3>Grupa</h3>
-                </div>
-                <div className={styles.options}>
                     <h3>Status</h3>
                     {filterData?.statuses.map(status => (
                         <div className={styles.option}>
@@ -173,6 +179,9 @@ const PracticesPage = () => {
                                 if(a.statusName > b.statusName) return 1;
                                 if(a.statusName < b.statusName) return -1;
                                 return 0;
+                            }
+                            default: {
+                                return 0
                             }
                         }
                     }).map(data => (

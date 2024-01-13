@@ -1,14 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { FormEvent, useRef } from "react"
+import { FormEvent, useRef, useState, useEffect } from "react"
 import { host } from "../modules/env"
-import { getToken } from "../modules/auth"
+import { getToken, getUser, getRole } from "../modules/auth"
 import styles from "./sass/EditDataPage.module.scss"
-import { practiceData, statusData, studentData } from "../modules/interfaces"
+import { practiceData } from "../modules/interfaces"
+import Error from "../components/Error"
 
 const EditPracticeData = () => {
     const propsData: practiceData = useLocation().state;
     const navigate = useNavigate();
-    
+    const [error, setError] = useState<string>("");
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
+
     const companyNameRef = useRef<HTMLInputElement>(null);
     const companyAddressRef = useRef<HTMLInputElement>(null);
     const nipRef = useRef<HTMLInputElement>(null);
@@ -29,7 +40,7 @@ const EditPracticeData = () => {
             rawDate = new Date(endRef.current.value)
             const endDate = rawDate.toISOString();
 
-            const result = await fetch(host+"/practices", {
+            const result = await fetch(host+"/practices/"+propsData.id, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,11 +59,24 @@ const EditPracticeData = () => {
                         "numOfHours": hoursRef.current?.value
                 })
             })
+
+            if(!result.ok) {
+                setError("Wystąpił błąd");
+                setTimeout(() => setError(""), 1500);
+                return
+            }
+
+            setError("Pomyślnie edytowano dane praktyki");
+            setTimeout(() => navigate(-1), 1500);
+            return
         }
     }
 
     const startDate = new Date(propsData.startDate).toLocaleDateString("sv")
     const endDate = new Date(propsData.endDate).toLocaleDateString("sv")
+
+    if(error) 
+        return <Error message={error}/>
 
     return (
         <div className={styles.content}>
@@ -62,9 +86,9 @@ const EditPracticeData = () => {
                         <div className={styles.data}>
                             <h1>Edycja danych praktyki</h1>
                             <label htmlFor="companyName">Nazwa firmy</label>
-                            <input type="text" id="companyName" defaultValue={propsData.companyName} ref={companyAddressRef}/>
+                            <input type="text" id="companyName" defaultValue={propsData.companyName} ref={companyNameRef}/>
                             <label htmlFor="companyAdress">Adres firmy</label>
-                            <input type="text" id="companyAdress" defaultValue={propsData.companyAdress} ref={companyAddressRef}/>
+                            <input type="text" id="companyAdress" defaultValue={propsData.companyAddress} ref={companyAddressRef}/>
                             <label htmlFor="nip">NIP</label>
                             <input type="text" id="nip" defaultValue={propsData.nip} ref={nipRef}/>
                             <label htmlFor="regon">REGON</label>

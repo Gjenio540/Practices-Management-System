@@ -184,3 +184,9 @@ input[type="text"], [type="number"],[type="date"],[type="password"] {
         transition: 0.3s;
     }
 }
+
+.centered {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

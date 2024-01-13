@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { getToken } from "../modules/auth"
+import { Link, useNavigate } from "react-router-dom"
+import { getToken, getUser, getRole } from "../modules/auth"
 import { host } from "../modules/env"
 import { studentData } from "../modules/interfaces"
 import Loading from "../components/Loading"
@@ -12,6 +12,16 @@ const StudentsPage = () => {
     const [data, setData] = useState<studentData[]>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!getUser()) {
+            navigate("/logowanie")
+        }
+        else if (getRole() !== "supervisor") {
+            navigate("/praktyki/me")
+        }
+    }, [])
 
     useEffect(() => {
         async function getData(): Promise<void> {
@@ -76,7 +86,9 @@ const StudentsPage = () => {
     if(error)
         return (
         <>
-        <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
+        <div className="centered">
+            <Link to={"/studenci/dodaj"} className="button bt-blue">+ Dodaj studenta</Link>
+        </div>
         <Error message={error} />
         </>
         )
