@@ -9,11 +9,11 @@ INSERT INTO users VALUES (8, "100008", "$2b$10$qGeMS4ANB64epD7S9qPQtO/1w3nUIG.VW
 INSERT INTO users VALUES (9, "100009", "$2b$10$Q2fEbSthh6W61gndl/qrkuLAeywme5O89UcRMQUf2U3biFznpBHj2", "student");
 INSERT INTO users VALUES (10, "100010", "$2b$10$OVkD051hwWucK7eQAoJLNOSbX3JD7Sy3K9szFLODmqICdprow6B9C", "student");
 
-INSERT INTO users VALUES (11, "A.Poplawski", "$2b$10$6UNVUi9vpVD/OsGBytRhI.LbJh/BP5EkOB22MU1h0n9SMXKmXrK2G", "supervisor");
-INSERT INTO users VALUES (12, "K.Mielcarek", "$2b$10$LHmoIazNff0pyQuV8J3NeOabaNd.6lGkIumb1ZPfwquYTWG6cxJt6", "supervisor");
+INSERT INTO users VALUES (11, "J.Nowak", "$2b$10$6UNVUi9vpVD/OsGBytRhI.LbJh/BP5EkOB22MU1h0n9SMXKmXrK2G", "supervisor");
+INSERT INTO users VALUES (12, "A.Kowalski", "$2b$10$LHmoIazNff0pyQuV8J3NeOabaNd.6lGkIumb1ZPfwquYTWG6cxJt6", "supervisor");
 
-INSERT INTO supervisors VALUES (1, "Andrzej", "Popławski", "A.Poplawski@imei.uz.zgora.pl", 11);
-INSERT INTO supervisors VALUES (2, "Kamil", "Mielcarek", " K.Mielcarek@imei.uz.zgora.pl", 12);
+INSERT INTO supervisors VALUES (1, "Jan", "Nowak", "nowak@mail.com", 11);
+INSERT INTO supervisors VALUES (2, "Adam", "Kowalski", "kowalski@mail.com", 12);
 
 INSERT INTO areas VALUES (1, "Informatyka", 1);
 INSERT INTO areas VALUES (2, "Biznes Elektroniczny", 1);

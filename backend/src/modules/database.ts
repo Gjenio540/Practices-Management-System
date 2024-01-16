@@ -23,6 +23,13 @@ export async function getStudents(id: number) {
   return result[0];
 }
 
+export async function getStudentData(id: number) {
+  const connection = mysql2.createConnection(credentials).promise();
+  const result = await connection.query<RowDataPacket[]>(`SELECT * from students WHERE id = ?`, [id])
+  connection.end();
+  return result[0][0];
+}
+
 export async function searchUser(username: string) {
   const connection = mysql2.createConnection(credentials).promise();
   const result = await connection.query<RowDataPacket[]>('SELECT * FROM users WHERE username = ?', [username]);

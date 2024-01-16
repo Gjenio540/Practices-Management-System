@@ -18,15 +18,12 @@ app.use(express.json());
 //signup student from form
 app.post("/auth/register/student", checkToken, async (req: Request, res: Response) => {
     try {
-        //---Token validation---
         const payload = parseJWTpayload(req.body.token as string);
         if (payload.role !== "supervisor") {
             res.sendStatus(403);
             return;
         }
-        //---Get supervisor data---
         const supervisor = await db.getSupervisor(payload.id);
-        //---Data initialization---
         const firstname = req.body.firstname as string;
         const lastname = req.body.lastname as string;
         const index = req.body.index as string;
@@ -40,17 +37,16 @@ app.post("/auth/register/student", checkToken, async (req: Request, res: Respons
         const userId = user.insertId;
         await db.insertStudent(firstname, lastname, index, areaId, group, userId);
 
-        //---Send Mail----
-        // await transporter.sendMail({
-        //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
-        //     to: `${zimbra}, ${gelearn}`, // list of receivers
-        //     subject: "Konto", // Subject line
-        //     html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
-        //             Twoje dane logowania to: <br>
-        //             login: ${index} <br>
-        //             hasło: ${password}
-        //             `, // html body
-        // });
+        await transporter.sendMail({
+            from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+            to: `${zimbra}, ${gelearn}`, // list of receivers
+            subject: "Konto", // Subject line
+            html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+                    Twoje dane logowania to: <br>
+                    login: ${index} <br>
+                    hasło: ${password}
+                    `, // html body
+        });
         res.sendStatus(201);
     }
     catch {
@@ -93,21 +89,21 @@ app.post("/auth/register/student/file", checkToken, async (req: Request, res: Re
                     }
                 }
             }
-            
+            const supervisor = await db.getSupervisor(payload.id);
             const user = await db.insertUser(index, await hashPassword(password), "student");
             const userId = user.insertId;
             await db.insertStudent(name, lastname, index, areaId, group, userId);
 
-            // await transporter.sendMail({
-            //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
-            //     to: `${zimbra}, ${gelearn}`, // list of receivers
-            //     subject: "Konto", // Subject line
-            //     html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
-            //             Twoje dane logowania to: <br>
-            //             login: ${index} <br>
-            //             hasło: ${password}
-            //             `, // html body
-            // });
+            await transporter.sendMail({
+                from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+                to: `${zimbra}, ${gelearn}`, // list of receivers
+                subject: "Konto", // Subject line
+                html: `Utworzono konto systemie zarządzania praktykami studenckimi. <br>
+                        Twoje dane logowania to: <br>
+                        login: ${index} <br>
+                        hasło: ${password}
+                        `, // html body
+            });
         });
         res.sendStatus(201);
     }
@@ -242,6 +238,22 @@ app.post("/practices", checkToken, async (req: Request, res: Response) => {
         await db.insertPractice(studentId, typeOfpractice, companyName, companyAdress, nip, regon, practiceStatus, semesterNumber, startDate, endDate, numOfHours);
         await db.insertLog(studentId, "Dodanie praktyki", getCurrentDate());
         await db.insertLog(studentId, "Zmiana statusu na Nowa praktyka", getCurrentDate());
+
+        const supervisor = await db.getSupervisor(payload.id);
+        const student = await db.getStudentData(studentId);
+
+        const gelearn = `${student.indexNum}@g.elearn.uz.zgora.pl`;
+        const zimbra = `${student.indexNum}@poczta.stud.uz.zgora.pl`;
+
+        await transporter.sendMail({
+            from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+            to: `${zimbra}, ${gelearn}`, // list of receivers
+            subject: "Zmiana statusu praktyki", // Subject line
+            html: `Zmiana statusu praktyki na: "Nowa praktyka"
+                    `, // html body
+        });
+    
+
         res.sendStatus(200);
     }
     catch {
@@ -294,12 +306,12 @@ app.put("/practices/:id/status", checkToken, async (req: Request, res: Response)
     await db.updateStatus(statusId, practiceId);
     await db.insertLog(practiceId, "Zmiana stususu na "+statusName, getCurrentDate());
 
-    // await transporter.sendMail({
-    //     from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
-    //     to: `${zimbra}, ${gelearn}`, // list of receivers
-    //     subject: "Zmiana statusu praktyki", // Subject line
-    //     html: `Twój status praktyki zmienił się na: <b>${statusName}</b>`, // html body
-    // });
+    await transporter.sendMail({
+        from: `"${supervisor.firstname} ${supervisor.lastname}" <${supervisor.email}>`, // sender address
+        to: `${zimbra}, ${gelearn}`, // list of receivers
+        subject: "Zmiana statusu praktyki", // Subject line
+        html: `Twój status praktyki zmienił się na: <b>${statusName}</b>`, // html body
+    });
     res.sendStatus(200);
 })
 
@@ -338,6 +350,7 @@ app.put("/students", checkToken, async (req: Request, res: Response) => {
         const specialty = req.body.specialty as string;
         const areaid = req.body.areaId as number;
         await db.updateStudent(id, firstname, lastname, indexNum, studGroup, specialty, areaid);
+        await db.insertLog(id, "Edycja danych studenta", getCurrentDate());
         res.sendStatus(200);
     }
     catch {
